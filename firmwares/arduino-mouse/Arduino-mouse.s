@@ -119,7 +119,7 @@ SetupHardware:
 .LBB66:
 	.file 5 "../../LUFA/Drivers/Peripheral/Serial.h"
 	.loc 5 102 0
-	ldi r24,lo8(8)
+	ldi r24,lo8(12)
 	ldi r25,0
 	sts 204+1,r25
 	sts 204,r24
@@ -2573,7 +2573,7 @@ Mouse_HID_Interface:
 	.long	.LVL7
 	.word	0x5
 	.byte	0x8
-	.byte	0xe1
+	.byte	0x96
 	.byte	0x39
 	.byte	0x24
 	.byte	0x9f

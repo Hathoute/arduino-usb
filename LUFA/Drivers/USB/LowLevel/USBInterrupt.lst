@@ -2289,14 +2289,14 @@
  305               		.file 7 "../../LUFA/Drivers/USB/LowLevel/../HighLevel/DeviceStandardReq.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 USBInterrupt.c
-     /tmp/ccoEPBik.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccoEPBik.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccoEPBik.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccoEPBik.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccoEPBik.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccoEPBik.s:13     .text.USB_INT_DisableAllInterrupts:0000000000000000 USB_INT_DisableAllInterrupts
-     /tmp/ccoEPBik.s:31     .text.USB_INT_ClearAllInterrupts:0000000000000000 USB_INT_ClearAllInterrupts
-     /tmp/ccoEPBik.s:48     .text.__vector_11:0000000000000000 __vector_11
+     /tmp/ccoZbu2Q.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccoZbu2Q.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccoZbu2Q.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccoZbu2Q.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccoZbu2Q.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccoZbu2Q.s:13     .text.USB_INT_DisableAllInterrupts:0000000000000000 USB_INT_DisableAllInterrupts
+     /tmp/ccoZbu2Q.s:31     .text.USB_INT_ClearAllInterrupts:0000000000000000 USB_INT_ClearAllInterrupts
+     /tmp/ccoZbu2Q.s:48     .text.__vector_11:0000000000000000 __vector_11
 
 UNDEFINED SYMBOLS
 EVENT_USB_Device_Disconnect

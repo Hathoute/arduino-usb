@@ -1616,13 +1616,13 @@
  183               		.file 6 "../../LUFA/Drivers/USB/Class/Device/../../HighLevel/USBTask.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 Audio.c
-     /tmp/ccsXLsUu.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccsXLsUu.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccsXLsUu.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccsXLsUu.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccsXLsUu.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccsXLsUu.s:13     .text.Audio_Device_ProcessControlRequest:0000000000000000 Audio_Device_ProcessControlRequest
-     /tmp/ccsXLsUu.s:77     .text.Audio_Device_ConfigureEndpoints:0000000000000000 Audio_Device_ConfigureEndpoints
+     /tmp/ccCVuII0.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccCVuII0.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccCVuII0.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccCVuII0.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccCVuII0.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccCVuII0.s:13     .text.Audio_Device_ProcessControlRequest:0000000000000000 Audio_Device_ProcessControlRequest
+     /tmp/ccCVuII0.s:77     .text.Audio_Device_ConfigureEndpoints:0000000000000000 Audio_Device_ConfigureEndpoints
 
 UNDEFINED SYMBOLS
 USB_ControlRequest

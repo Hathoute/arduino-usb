@@ -36,6 +36,28 @@
 #ifndef _DESCRIPTORS_H_
 #define _DESCRIPTORS_H_
 
+	/* Select the mouse we will use */
+	#define LOGITECH_G502
+
+	/* Various Descriptors for real devices */
+	#ifdef LOGITECH_G502
+		#define VENDOR_ID 0x046d
+		#define PRODUCT_ID 0xc08b
+		#define RELEASE_NO 0x2703
+		#define CONFIG_ATTRIBUTES (USB_CONFIG_ATTR_BUSPOWERED | USB_CONFIG_ATTR_REMOTEWAKEUP)
+		#define MAX_POWER 300				// Here, max power is in mA.
+		#define POLLING_INTERVAL 0x01
+		#define FAKE_DESCRIPTOR_LENGTH 151
+
+		#define PRODUCT_STR L"G502 HERO SE"
+		#define PRODUCT_STR_LEN 12
+	#endif
+
+	/* Use two interfaces for descriptors that support this */
+	#ifdef LOGITECH_G502
+		#define USE_TWO_INTERFACES
+	#endif
+
 	/* Includes: */
 		#include <LUFA/Drivers/USB/USB.h>
 		#include <LUFA/Drivers/USB/Class/HID.h>
@@ -53,6 +75,11 @@
 			USB_Descriptor_Interface_t            HID_Interface;
 			USB_HID_Descriptor_t                  HID_MouseHID;
 	        USB_Descriptor_Endpoint_t             HID_ReportINEndpoint;
+		#ifdef USE_TWO_INTERFACES
+			USB_Descriptor_Interface_t            HID_Second_Interface;
+			USB_HID_Descriptor_t                  HID_Second_MouseHID;
+	        USB_Descriptor_Endpoint_t             HID_Second_ReportINEndpoint;
+		#endif
 		} USB_Descriptor_Configuration_t;
 					
 	/* Macros: */
@@ -61,6 +88,12 @@
 		
 		/** Size in bytes of the Mouse HID reporting IN endpoint. */
 		#define MOUSE_EPSIZE              8
+
+		/** Endpoint number of the Fake HID reporting IN endpoint (if defined). */
+		#define FAKE_EPNUM               2
+		
+		/** Size in bytes of the Fake HID reporting IN endpoint. */
+		#define FAKE_EPSIZE              20
 
 	/* Function Prototypes: */
 		uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue,

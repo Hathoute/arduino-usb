@@ -89,13 +89,13 @@ const USB_Descriptor_Device_t PROGMEM DeviceDescriptor =
 				
 	.Endpoint0Size          = FIXED_CONTROL_ENDPOINT_SIZE,
 		
-	.VendorID               = 0x03EB,
-	.ProductID              = 0x2041,
-	.ReleaseNumber          = 0x0000,
+	.VendorID               = VENDOR_ID,
+	.ProductID              = PRODUCT_ID,
+	.ReleaseNumber          = RELEASE_NO,
 		
 	.ManufacturerStrIndex   = 0x01,
 	.ProductStrIndex        = 0x02,
-	.SerialNumStrIndex      = NO_DESCRIPTOR,
+	.SerialNumStrIndex      = 0x03,
 		
 	.NumberOfConfigurations = FIXED_NUM_CONFIGURATIONS
 };
@@ -112,17 +112,21 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor =
 			.Header                 = {.Size = sizeof(USB_Descriptor_Configuration_Header_t), .Type = DTYPE_Configuration},
 
 			.TotalConfigurationSize = sizeof(USB_Descriptor_Configuration_t),
+		#ifdef USE_TWO_INTERFACES
+			.TotalInterfaces        = 2,
+		#else
 			.TotalInterfaces        = 1,
+		#endif
 				
 			.ConfigurationNumber    = 1,
 			.ConfigurationStrIndex  = NO_DESCRIPTOR,
 				
-			.ConfigAttributes       = (USB_CONFIG_ATTR_BUSPOWERED | USB_CONFIG_ATTR_SELFPOWERED),
+			.ConfigAttributes       = CONFIG_ATTRIBUTES,
 			
-			.MaxPowerConsumption    = USB_CONFIG_POWER_MA(200)
+			.MaxPowerConsumption    = USB_CONFIG_POWER_MA(MAX_POWER)
 		},
 		
-	.HID_Interface = 
+	.HID_Second_Interface = 
 		{
 			.Header                 = {.Size = sizeof(USB_Descriptor_Interface_t), .Type = DTYPE_Interface},
 
@@ -138,7 +142,7 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor =
 			.InterfaceStrIndex      = NO_DESCRIPTOR
 		},
 
-	.HID_MouseHID = 
+	.HID_Second_MouseHID = 
 		{
 			.Header                 = {.Size = sizeof(USB_HID_Descriptor_t), .Type = DTYPE_HID},
 
@@ -149,15 +153,54 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor =
 			.HIDReportLength        = sizeof(MouseReport)
 		},
 
-	.HID_ReportINEndpoint = 
+	.HID_Second_ReportINEndpoint = 
 		{
 			.Header                 = {.Size = sizeof(USB_Descriptor_Endpoint_t), .Type = DTYPE_Endpoint},
 
 			.EndpointAddress        = (ENDPOINT_DESCRIPTOR_DIR_IN | MOUSE_EPNUM),
 			.Attributes             = (EP_TYPE_INTERRUPT | ENDPOINT_ATTR_NO_SYNC | ENDPOINT_USAGE_DATA),
 			.EndpointSize           = MOUSE_EPSIZE,
-			.PollingIntervalMS      = 0x0A
+			.PollingIntervalMS      = POLLING_INTERVAL
 		}
+#ifdef USE_TWO_INTERFACES
+	,
+	.HID_Interface = 
+		{
+			.Header                 = {.Size = sizeof(USB_Descriptor_Interface_t), .Type = DTYPE_Interface},
+
+			.InterfaceNumber        = 0x01,
+			.AlternateSetting       = 0x00,
+			
+			.TotalEndpoints         = 1,
+				
+			.Class                  = 0x03,
+			.SubClass               = 0x00,
+			.Protocol               = HID_NON_BOOT_PROTOCOL,
+				
+			.InterfaceStrIndex      = NO_DESCRIPTOR
+		},
+
+	.HID_MouseHID = 
+		{
+			.Header                 = {.Size = sizeof(USB_HID_Descriptor_t), .Type = DTYPE_HID},
+
+			.HIDSpec                = VERSION_BCD(01.11),
+			.CountryCode            = 0x00,
+			.TotalReportDescriptors = 1,
+			.HIDReportType          = DTYPE_Report,
+			.HIDReportLength        = FAKE_DESCRIPTOR_LENGTH
+		},
+
+	.HID_ReportINEndpoint = 
+		{
+			.Header                 = {.Size = sizeof(USB_Descriptor_Endpoint_t), .Type = DTYPE_Endpoint},
+
+			.EndpointAddress        = (ENDPOINT_DESCRIPTOR_DIR_IN | FAKE_EPNUM),
+			.Attributes             = (EP_TYPE_INTERRUPT | ENDPOINT_ATTR_NO_SYNC | ENDPOINT_USAGE_DATA),
+			.EndpointSize           = FAKE_EPSIZE,
+			.PollingIntervalMS      = POLLING_INTERVAL
+		}
+#endif
 };
 
 /** Language descriptor structure. This descriptor, located in FLASH memory, is returned when the host requests
@@ -188,9 +231,9 @@ const USB_Descriptor_String_t PROGMEM ManufacturerString =
  */
 const USB_Descriptor_String_t PROGMEM ProductString =
 {
-	.Header                 = {.Size = USB_STRING_LEN(9), .Type = DTYPE_String},
+	.Header                 = {.Size = USB_STRING_LEN(PRODUCT_STR_LEN), .Type = DTYPE_String},
 		
-	.UnicodeString          = L"Mouse 0.1"
+	.UnicodeString          = PRODUCT_STR
 };
 
 /** This function is called by the library when in device mode, and must be overridden (see library "USB Descriptors"

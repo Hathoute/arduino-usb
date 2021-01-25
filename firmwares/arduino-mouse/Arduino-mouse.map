@@ -562,7 +562,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x0000000000000000      0xe8c
+.text           0x0000000000000000      0xeac
  *(.vectors)
  .vectors       0x0000000000000000       0x74 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr35/crtatmega8u2.o
                 0x0000000000000000                __vectors
@@ -580,42 +580,43 @@ END GROUP
  *libprintf_flt.a:*(.progmem.data)
  *libc.a:*(.progmem.data)
  *(.progmem*)
- .progmem.data  0x0000000000000088       0x92 Descriptors.o
+ .progmem.data  0x0000000000000088       0xb1 Descriptors.o
                 0x0000000000000088                ProductString
-                0x000000000000009e                ManufacturerString
-                0x00000000000000b0                LanguageString
-                0x00000000000000b4                ConfigurationDescriptor
-                0x00000000000000d6                DeviceDescriptor
-                0x00000000000000e8                MouseReport
-                0x000000000000011a                . = ALIGN (0x2)
+                0x00000000000000a4                ManufacturerString
+                0x00000000000000b6                LanguageString
+                0x00000000000000ba                ConfigurationDescriptor
+                0x00000000000000f5                DeviceDescriptor
+                0x0000000000000107                MouseReport
+                0x000000000000013a                . = ALIGN (0x2)
+ *fill*         0x0000000000000139        0x1 
  *(.jumptables)
  *(.jumptables*)
  *(.lowtext)
  *(.lowtext*)
-                0x000000000000011a                __ctors_start = .
+                0x000000000000013a                __ctors_start = .
  *(.ctors)
-                0x000000000000011a                __ctors_end = .
-                0x000000000000011a                __dtors_start = .
+                0x000000000000013a                __ctors_end = .
+                0x000000000000013a                __dtors_start = .
  *(.dtors)
-                0x000000000000011a                __dtors_end = .
+                0x000000000000013a                __dtors_end = .
  SORT(*)(.ctors)
  SORT(*)(.dtors)
  *(.init0)
- .init0         0x000000000000011a        0x0 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr35/crtatmega8u2.o
-                0x000000000000011a                __init
+ .init0         0x000000000000013a        0x0 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr35/crtatmega8u2.o
+                0x000000000000013a                __init
  *(.init0)
  *(.init1)
  *(.init1)
  *(.init2)
- .init2         0x000000000000011a        0xc /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr35/crtatmega8u2.o
+ .init2         0x000000000000013a        0xc /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr35/crtatmega8u2.o
  *(.init2)
  *(.init3)
  *(.init3)
  *(.init4)
- .init4         0x0000000000000126       0x16 /usr/lib/gcc/avr/5.4.0/avr35/libgcc.a(_copy_data.o)
-                0x0000000000000126                __do_copy_data
- .init4         0x000000000000013c       0x10 /usr/lib/gcc/avr/5.4.0/avr35/libgcc.a(_clear_bss.o)
-                0x000000000000013c                __do_clear_bss
+ .init4         0x0000000000000146       0x16 /usr/lib/gcc/avr/5.4.0/avr35/libgcc.a(_copy_data.o)
+                0x0000000000000146                __do_copy_data
+ .init4         0x000000000000015c       0x10 /usr/lib/gcc/avr/5.4.0/avr35/libgcc.a(_clear_bss.o)
+                0x000000000000015c                __do_clear_bss
  *(.init4)
  *(.init5)
  *(.init5)
@@ -626,153 +627,153 @@ END GROUP
  *(.init8)
  *(.init8)
  *(.init9)
- .init9         0x000000000000014c        0x4 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr35/crtatmega8u2.o
+ .init9         0x000000000000016c        0x4 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr35/crtatmega8u2.o
  *(.init9)
  *(.text)
- .text          0x0000000000000150        0x2 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr35/crtatmega8u2.o
-                0x0000000000000150                __vector_22
-                0x0000000000000150                __vector_28
-                0x0000000000000150                __vector_1
-                0x0000000000000150                __vector_24
-                0x0000000000000150                __vector_12
-                0x0000000000000150                __bad_interrupt
-                0x0000000000000150                __vector_6
-                0x0000000000000150                __vector_3
-                0x0000000000000150                __vector_25
-                0x0000000000000150                __vector_13
-                0x0000000000000150                __vector_17
-                0x0000000000000150                __vector_19
-                0x0000000000000150                __vector_7
-                0x0000000000000150                __vector_27
-                0x0000000000000150                __vector_5
-                0x0000000000000150                __vector_4
-                0x0000000000000150                __vector_9
-                0x0000000000000150                __vector_2
-                0x0000000000000150                __vector_21
-                0x0000000000000150                __vector_15
-                0x0000000000000150                __vector_8
-                0x0000000000000150                __vector_26
-                0x0000000000000150                __vector_14
-                0x0000000000000150                __vector_10
-                0x0000000000000150                __vector_16
-                0x0000000000000150                __vector_18
-                0x0000000000000150                __vector_20
-                0x0000000000000152                . = ALIGN (0x2)
+ .text          0x0000000000000170        0x2 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr35/crtatmega8u2.o
+                0x0000000000000170                __vector_22
+                0x0000000000000170                __vector_28
+                0x0000000000000170                __vector_1
+                0x0000000000000170                __vector_24
+                0x0000000000000170                __vector_12
+                0x0000000000000170                __bad_interrupt
+                0x0000000000000170                __vector_6
+                0x0000000000000170                __vector_3
+                0x0000000000000170                __vector_25
+                0x0000000000000170                __vector_13
+                0x0000000000000170                __vector_17
+                0x0000000000000170                __vector_19
+                0x0000000000000170                __vector_7
+                0x0000000000000170                __vector_27
+                0x0000000000000170                __vector_5
+                0x0000000000000170                __vector_4
+                0x0000000000000170                __vector_9
+                0x0000000000000170                __vector_2
+                0x0000000000000170                __vector_21
+                0x0000000000000170                __vector_15
+                0x0000000000000170                __vector_8
+                0x0000000000000170                __vector_26
+                0x0000000000000170                __vector_14
+                0x0000000000000170                __vector_10
+                0x0000000000000170                __vector_16
+                0x0000000000000170                __vector_18
+                0x0000000000000170                __vector_20
+                0x0000000000000172                . = ALIGN (0x2)
  *(.text.*)
  .text.RingBuffer_Remove.constprop.3
-                0x0000000000000152       0x36 Arduino-mouse.o
+                0x0000000000000172       0x36 Arduino-mouse.o
  .text.SetupHardware
-                0x0000000000000188       0x52 Arduino-mouse.o
-                0x0000000000000188                SetupHardware
+                0x00000000000001a8       0x52 Arduino-mouse.o
+                0x00000000000001a8                SetupHardware
  .text.startup.main
-                0x00000000000001da       0x50 Arduino-mouse.o
-                0x00000000000001da                main
+                0x00000000000001fa       0x50 Arduino-mouse.o
+                0x00000000000001fa                main
  .text.EVENT_USB_Device_Connect
-                0x000000000000022a        0x2 Arduino-mouse.o
-                0x000000000000022a                EVENT_USB_Device_Connect
+                0x000000000000024a        0x2 Arduino-mouse.o
+                0x000000000000024a                EVENT_USB_Device_Connect
  .text.EVENT_USB_Device_Disconnect
-                0x000000000000022c        0x2 Arduino-mouse.o
-                0x000000000000022c                EVENT_USB_Device_Disconnect
+                0x000000000000024c        0x2 Arduino-mouse.o
+                0x000000000000024c                EVENT_USB_Device_Disconnect
  .text.EVENT_USB_Device_ConfigurationChanged
-                0x000000000000022e       0x12 Arduino-mouse.o
-                0x000000000000022e                EVENT_USB_Device_ConfigurationChanged
+                0x000000000000024e       0x12 Arduino-mouse.o
+                0x000000000000024e                EVENT_USB_Device_ConfigurationChanged
  .text.EVENT_USB_Device_UnhandledControlRequest
-                0x0000000000000240        0x6 Arduino-mouse.o
-                0x0000000000000240                EVENT_USB_Device_UnhandledControlRequest
+                0x0000000000000260        0x6 Arduino-mouse.o
+                0x0000000000000260                EVENT_USB_Device_UnhandledControlRequest
  .text.EVENT_USB_Device_StartOfFrame
-                0x0000000000000246       0x18 Arduino-mouse.o
-                0x0000000000000246                EVENT_USB_Device_StartOfFrame
+                0x0000000000000266       0x18 Arduino-mouse.o
+                0x0000000000000266                EVENT_USB_Device_StartOfFrame
  .text.CALLBACK_HID_Device_CreateHIDReport
-                0x000000000000025e       0x2a Arduino-mouse.o
-                0x000000000000025e                CALLBACK_HID_Device_CreateHIDReport
+                0x000000000000027e       0x2a Arduino-mouse.o
+                0x000000000000027e                CALLBACK_HID_Device_CreateHIDReport
  .text.CALLBACK_HID_Device_ProcessHIDReport
-                0x0000000000000288        0x2 Arduino-mouse.o
-                0x0000000000000288                CALLBACK_HID_Device_ProcessHIDReport
+                0x00000000000002a8        0x2 Arduino-mouse.o
+                0x00000000000002a8                CALLBACK_HID_Device_ProcessHIDReport
  .text.__vector_23
-                0x000000000000028a       0x6e Arduino-mouse.o
-                0x000000000000028a                __vector_23
+                0x00000000000002aa       0x6e Arduino-mouse.o
+                0x00000000000002aa                __vector_23
  .text.CALLBACK_USB_GetDescriptor
-                0x00000000000002f8       0x82 Descriptors.o
-                0x00000000000002f8                CALLBACK_USB_GetDescriptor
+                0x0000000000000318       0x82 Descriptors.o
+                0x0000000000000318                CALLBACK_USB_GetDescriptor
  .text.Endpoint_BytesToEPSizeMaskDynamic
-                0x000000000000037a       0x1c ../../LUFA/Drivers/USB/LowLevel/Endpoint.o
-                0x000000000000037a                Endpoint_BytesToEPSizeMaskDynamic
+                0x000000000000039a       0x1c ../../LUFA/Drivers/USB/LowLevel/Endpoint.o
+                0x000000000000039a                Endpoint_BytesToEPSizeMaskDynamic
  .text.Endpoint_ConfigureEndpoint_Prv
-                0x0000000000000396       0x26 ../../LUFA/Drivers/USB/LowLevel/Endpoint.o
-                0x0000000000000396                Endpoint_ConfigureEndpoint_Prv
+                0x00000000000003b6       0x26 ../../LUFA/Drivers/USB/LowLevel/Endpoint.o
+                0x00000000000003b6                Endpoint_ConfigureEndpoint_Prv
  .text.Endpoint_ClearEndpoints
-                0x00000000000003bc       0x28 ../../LUFA/Drivers/USB/LowLevel/Endpoint.o
-                0x00000000000003bc                Endpoint_ClearEndpoints
+                0x00000000000003dc       0x28 ../../LUFA/Drivers/USB/LowLevel/Endpoint.o
+                0x00000000000003dc                Endpoint_ClearEndpoints
  .text.Endpoint_ClearStatusStage
-                0x00000000000003e4       0x3a ../../LUFA/Drivers/USB/LowLevel/Endpoint.o
-                0x00000000000003e4                Endpoint_ClearStatusStage
+                0x0000000000000404       0x3a ../../LUFA/Drivers/USB/LowLevel/Endpoint.o
+                0x0000000000000404                Endpoint_ClearStatusStage
  .text.Endpoint_WaitUntilReady
-                0x000000000000041e       0x5a ../../LUFA/Drivers/USB/LowLevel/Endpoint.o
-                0x000000000000041e                Endpoint_WaitUntilReady
+                0x000000000000043e       0x5a ../../LUFA/Drivers/USB/LowLevel/Endpoint.o
+                0x000000000000043e                Endpoint_WaitUntilReady
  .text.Endpoint_Write_Stream_LE
-                0x0000000000000478       0x60 ../../LUFA/Drivers/USB/LowLevel/Endpoint.o
-                0x0000000000000478                Endpoint_Write_Stream_LE
+                0x0000000000000498       0x60 ../../LUFA/Drivers/USB/LowLevel/Endpoint.o
+                0x0000000000000498                Endpoint_Write_Stream_LE
  .text.Endpoint_Write_Control_Stream_LE
-                0x00000000000004d8       0xac ../../LUFA/Drivers/USB/LowLevel/Endpoint.o
-                0x00000000000004d8                Endpoint_Write_Control_Stream_LE
+                0x00000000000004f8       0xac ../../LUFA/Drivers/USB/LowLevel/Endpoint.o
+                0x00000000000004f8                Endpoint_Write_Control_Stream_LE
  .text.Endpoint_Write_Control_PStream_LE
-                0x0000000000000584       0xae ../../LUFA/Drivers/USB/LowLevel/Endpoint.o
-                0x0000000000000584                Endpoint_Write_Control_PStream_LE
+                0x00000000000005a4       0xae ../../LUFA/Drivers/USB/LowLevel/Endpoint.o
+                0x00000000000005a4                Endpoint_Write_Control_PStream_LE
  .text.Endpoint_Read_Control_Stream_LE
-                0x0000000000000632       0x72 ../../LUFA/Drivers/USB/LowLevel/Endpoint.o
-                0x0000000000000632                Endpoint_Read_Control_Stream_LE
+                0x0000000000000652       0x72 ../../LUFA/Drivers/USB/LowLevel/Endpoint.o
+                0x0000000000000652                Endpoint_Read_Control_Stream_LE
  .text.USB_ResetInterface
-                0x00000000000006a4       0x74 ../../LUFA/Drivers/USB/LowLevel/USBController.o
-                0x00000000000006a4                USB_ResetInterface
+                0x00000000000006c4       0x74 ../../LUFA/Drivers/USB/LowLevel/USBController.o
+                0x00000000000006c4                USB_ResetInterface
  .text.USB_Init
-                0x0000000000000718        0xa ../../LUFA/Drivers/USB/LowLevel/USBController.o
-                0x0000000000000718                USB_Init
+                0x0000000000000738        0xa ../../LUFA/Drivers/USB/LowLevel/USBController.o
+                0x0000000000000738                USB_Init
  .text.USB_INT_DisableAllInterrupts
-                0x0000000000000722        0x6 ../../LUFA/Drivers/USB/LowLevel/USBInterrupt.o
-                0x0000000000000722                USB_INT_DisableAllInterrupts
+                0x0000000000000742        0x6 ../../LUFA/Drivers/USB/LowLevel/USBInterrupt.o
+                0x0000000000000742                USB_INT_DisableAllInterrupts
  .text.USB_INT_ClearAllInterrupts
-                0x0000000000000728        0x6 ../../LUFA/Drivers/USB/LowLevel/USBInterrupt.o
-                0x0000000000000728                USB_INT_ClearAllInterrupts
+                0x0000000000000748        0x6 ../../LUFA/Drivers/USB/LowLevel/USBInterrupt.o
+                0x0000000000000748                USB_INT_ClearAllInterrupts
  .text.__vector_11
-                0x000000000000072e      0x144 ../../LUFA/Drivers/USB/LowLevel/USBInterrupt.o
-                0x000000000000072e                __vector_11
+                0x000000000000074e      0x144 ../../LUFA/Drivers/USB/LowLevel/USBInterrupt.o
+                0x000000000000074e                __vector_11
  .text.USB_Device_ProcessControlRequest
-                0x0000000000000872      0x1e8 ../../LUFA/Drivers/USB/HighLevel/DeviceStandardReq.o
-                0x0000000000000872                USB_Device_ProcessControlRequest
+                0x0000000000000892      0x1e8 ../../LUFA/Drivers/USB/HighLevel/DeviceStandardReq.o
+                0x0000000000000892                USB_Device_ProcessControlRequest
  .text.USB_Event_Stub
-                0x0000000000000a5a        0x2 ../../LUFA/Drivers/USB/HighLevel/Events.o
-                0x0000000000000a5a                EVENT_USB_Device_WakeUp
-                0x0000000000000a5a                USB_Event_Stub
-                0x0000000000000a5a                EVENT_USB_Device_Suspend
-                0x0000000000000a5a                EVENT_USB_Device_Reset
+                0x0000000000000a7a        0x2 ../../LUFA/Drivers/USB/HighLevel/Events.o
+                0x0000000000000a7a                EVENT_USB_Device_WakeUp
+                0x0000000000000a7a                USB_Event_Stub
+                0x0000000000000a7a                EVENT_USB_Device_Suspend
+                0x0000000000000a7a                EVENT_USB_Device_Reset
  .text.USB_USBTask
-                0x0000000000000a5c       0x22 ../../LUFA/Drivers/USB/HighLevel/USBTask.o
-                0x0000000000000a5c                USB_USBTask
+                0x0000000000000a7c       0x22 ../../LUFA/Drivers/USB/HighLevel/USBTask.o
+                0x0000000000000a7c                USB_USBTask
  .text.HID_Device_ProcessControlRequest
-                0x0000000000000a7e      0x236 ../../LUFA/Drivers/USB/Class/Device/HID.o
-                0x0000000000000a7e                HID_Device_ProcessControlRequest
+                0x0000000000000a9e      0x236 ../../LUFA/Drivers/USB/Class/Device/HID.o
+                0x0000000000000a9e                HID_Device_ProcessControlRequest
  .text.HID_Device_ConfigureEndpoints
-                0x0000000000000cb4       0x44 ../../LUFA/Drivers/USB/Class/Device/HID.o
-                0x0000000000000cb4                HID_Device_ConfigureEndpoints
+                0x0000000000000cd4       0x44 ../../LUFA/Drivers/USB/Class/Device/HID.o
+                0x0000000000000cd4                HID_Device_ConfigureEndpoints
  .text.HID_Device_USBTask
-                0x0000000000000cf8      0x14a ../../LUFA/Drivers/USB/Class/Device/HID.o
-                0x0000000000000cf8                HID_Device_USBTask
- .text.libgcc   0x0000000000000e42        0xc /usr/lib/gcc/avr/5.4.0/avr35/libgcc.a(_tablejump2.o)
-                0x0000000000000e42                __tablejump2__
+                0x0000000000000d18      0x14a ../../LUFA/Drivers/USB/Class/Device/HID.o
+                0x0000000000000d18                HID_Device_USBTask
+ .text.libgcc   0x0000000000000e62        0xc /usr/lib/gcc/avr/5.4.0/avr35/libgcc.a(_tablejump2.o)
+                0x0000000000000e62                __tablejump2__
  .text.avr-libc
-                0x0000000000000e4e       0x1a /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr35/libc.a(memcmp.o)
-                0x0000000000000e4e                memcmp
+                0x0000000000000e6e       0x1a /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr35/libc.a(memcmp.o)
+                0x0000000000000e6e                memcmp
  .text.avr-libc
-                0x0000000000000e68       0x12 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr35/libc.a(memcpy.o)
-                0x0000000000000e68                memcpy
+                0x0000000000000e88       0x12 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr35/libc.a(memcpy.o)
+                0x0000000000000e88                memcpy
  .text.avr-libc
-                0x0000000000000e7a        0xe /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr35/libc.a(memset.o)
-                0x0000000000000e7a                memset
-                0x0000000000000e88                . = ALIGN (0x2)
+                0x0000000000000e9a        0xe /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr35/libc.a(memset.o)
+                0x0000000000000e9a                memset
+                0x0000000000000ea8                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x0000000000000e88        0x0 /usr/lib/gcc/avr/5.4.0/avr35/libgcc.a(_exit.o)
-                0x0000000000000e88                exit
-                0x0000000000000e88                _exit
+ .fini9         0x0000000000000ea8        0x0 /usr/lib/gcc/avr/5.4.0/avr35/libgcc.a(_exit.o)
+                0x0000000000000ea8                exit
+                0x0000000000000ea8                _exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -791,11 +792,11 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x0000000000000e88        0x4 /usr/lib/gcc/avr/5.4.0/avr35/libgcc.a(_exit.o)
+ .fini0         0x0000000000000ea8        0x4 /usr/lib/gcc/avr/5.4.0/avr35/libgcc.a(_exit.o)
  *(.fini0)
-                0x0000000000000e8c                _etext = .
+                0x0000000000000eac                _etext = .
 
-.data           0x0000000000800100        0xe load address 0x0000000000000e8c
+.data           0x0000000000800100        0xe load address 0x0000000000000eac
                 0x0000000000800100                PROVIDE (__data_start, .)
  *(.data)
  .data          0x0000000000800100        0xd Arduino-mouse.o
@@ -825,8 +826,8 @@ END GROUP
                 0x000000000080019a                USB_IsInitialized
                 0x000000000080019b                USB_ControlRequest
                 0x00000000008001a3                PROVIDE (__bss_end, .)
-                0x0000000000000e8c                __data_load_start = LOADADDR (.data)
-                0x0000000000000e9a                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x0000000000000eac                __data_load_start = LOADADDR (.data)
+                0x0000000000000eba                __data_load_end = (__data_load_start + SIZEOF (.data))
 
 .noinit         0x00000000008001a3        0x0
                 [!provide]                        PROVIDE (__noinit_start, .)
@@ -929,31 +930,31 @@ END GROUP
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x0000000000000000     0x44cc
+.debug_info     0x0000000000000000     0x44fc
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x0000000000000000      0x696 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr35/crtatmega8u2.o
  .debug_info    0x0000000000000696      0x931 Arduino-mouse.o
- .debug_info    0x0000000000000fc7      0x5ee Descriptors.o
- .debug_info    0x00000000000015b5     0x16d3 ../../LUFA/Drivers/USB/LowLevel/Endpoint.o
- .debug_info    0x0000000000002c88      0x28b ../../LUFA/Drivers/USB/LowLevel/USBController.o
- .debug_info    0x0000000000002f13      0x2ea ../../LUFA/Drivers/USB/LowLevel/USBInterrupt.o
- .debug_info    0x00000000000031fd      0x6ef ../../LUFA/Drivers/USB/HighLevel/DeviceStandardReq.o
- .debug_info    0x00000000000038ec       0x78 ../../LUFA/Drivers/USB/HighLevel/Events.o
- .debug_info    0x0000000000003964      0x23d ../../LUFA/Drivers/USB/HighLevel/USBTask.o
- .debug_info    0x0000000000003ba1      0x92b ../../LUFA/Drivers/USB/Class/Device/HID.o
+ .debug_info    0x0000000000000fc7      0x61e Descriptors.o
+ .debug_info    0x00000000000015e5     0x16d3 ../../LUFA/Drivers/USB/LowLevel/Endpoint.o
+ .debug_info    0x0000000000002cb8      0x28b ../../LUFA/Drivers/USB/LowLevel/USBController.o
+ .debug_info    0x0000000000002f43      0x2ea ../../LUFA/Drivers/USB/LowLevel/USBInterrupt.o
+ .debug_info    0x000000000000322d      0x6ef ../../LUFA/Drivers/USB/HighLevel/DeviceStandardReq.o
+ .debug_info    0x000000000000391c       0x78 ../../LUFA/Drivers/USB/HighLevel/Events.o
+ .debug_info    0x0000000000003994      0x23d ../../LUFA/Drivers/USB/HighLevel/USBTask.o
+ .debug_info    0x0000000000003bd1      0x92b ../../LUFA/Drivers/USB/Class/Device/HID.o
 
-.debug_abbrev   0x0000000000000000     0x1542
+.debug_abbrev   0x0000000000000000     0x1551
  *(.debug_abbrev)
  .debug_abbrev  0x0000000000000000      0x63b /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr35/crtatmega8u2.o
  .debug_abbrev  0x000000000000063b      0x30e Arduino-mouse.o
- .debug_abbrev  0x0000000000000949      0x14c Descriptors.o
- .debug_abbrev  0x0000000000000a95      0x229 ../../LUFA/Drivers/USB/LowLevel/Endpoint.o
- .debug_abbrev  0x0000000000000cbe      0x128 ../../LUFA/Drivers/USB/LowLevel/USBController.o
- .debug_abbrev  0x0000000000000de6      0x159 ../../LUFA/Drivers/USB/LowLevel/USBInterrupt.o
- .debug_abbrev  0x0000000000000f3f      0x230 ../../LUFA/Drivers/USB/HighLevel/DeviceStandardReq.o
- .debug_abbrev  0x000000000000116f       0x44 ../../LUFA/Drivers/USB/HighLevel/Events.o
- .debug_abbrev  0x00000000000011b3      0x15f ../../LUFA/Drivers/USB/HighLevel/USBTask.o
- .debug_abbrev  0x0000000000001312      0x230 ../../LUFA/Drivers/USB/Class/Device/HID.o
+ .debug_abbrev  0x0000000000000949      0x15b Descriptors.o
+ .debug_abbrev  0x0000000000000aa4      0x229 ../../LUFA/Drivers/USB/LowLevel/Endpoint.o
+ .debug_abbrev  0x0000000000000ccd      0x128 ../../LUFA/Drivers/USB/LowLevel/USBController.o
+ .debug_abbrev  0x0000000000000df5      0x159 ../../LUFA/Drivers/USB/LowLevel/USBInterrupt.o
+ .debug_abbrev  0x0000000000000f4e      0x230 ../../LUFA/Drivers/USB/HighLevel/DeviceStandardReq.o
+ .debug_abbrev  0x000000000000117e       0x44 ../../LUFA/Drivers/USB/HighLevel/Events.o
+ .debug_abbrev  0x00000000000011c2      0x15f ../../LUFA/Drivers/USB/HighLevel/USBTask.o
+ .debug_abbrev  0x0000000000001321      0x230 ../../LUFA/Drivers/USB/Class/Device/HID.o
 
 .debug_line     0x0000000000000000     0x26b4
  *(.debug_line .debug_line.* .debug_line_end)
@@ -980,26 +981,26 @@ END GROUP
  .debug_frame   0x0000000000000648       0x2c ../../LUFA/Drivers/USB/HighLevel/USBTask.o
  .debug_frame   0x0000000000000674      0x100 ../../LUFA/Drivers/USB/Class/Device/HID.o
 
-.debug_str      0x0000000000000000     0x1b5b
+.debug_str      0x0000000000000000     0x1ba0
  *(.debug_str)
  .debug_str     0x0000000000000000      0x256 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr35/crtatmega8u2.o
  .debug_str     0x0000000000000256      0x621 Arduino-mouse.o
                                         0x67e (size before relaxing)
- .debug_str     0x0000000000000877      0x45e Descriptors.o
-                                        0x693 (size before relaxing)
- .debug_str     0x0000000000000cd5      0x820 ../../LUFA/Drivers/USB/LowLevel/Endpoint.o
+ .debug_str     0x0000000000000877      0x4a3 Descriptors.o
+                                        0x6d8 (size before relaxing)
+ .debug_str     0x0000000000000d1a      0x820 ../../LUFA/Drivers/USB/LowLevel/Endpoint.o
                                         0xadc (size before relaxing)
- .debug_str     0x00000000000014f5      0x148 ../../LUFA/Drivers/USB/LowLevel/USBController.o
+ .debug_str     0x000000000000153a      0x148 ../../LUFA/Drivers/USB/LowLevel/USBController.o
                                         0x3a0 (size before relaxing)
- .debug_str     0x000000000000163d       0xa1 ../../LUFA/Drivers/USB/LowLevel/USBInterrupt.o
+ .debug_str     0x0000000000001682       0xa1 ../../LUFA/Drivers/USB/LowLevel/USBInterrupt.o
                                         0x441 (size before relaxing)
- .debug_str     0x00000000000016de      0x2e4 ../../LUFA/Drivers/USB/HighLevel/DeviceStandardReq.o
+ .debug_str     0x0000000000001723      0x2e4 ../../LUFA/Drivers/USB/HighLevel/DeviceStandardReq.o
                                         0x71a (size before relaxing)
- .debug_str     0x00000000000019c2       0x39 ../../LUFA/Drivers/USB/HighLevel/Events.o
+ .debug_str     0x0000000000001a07       0x39 ../../LUFA/Drivers/USB/HighLevel/Events.o
                                         0x1d5 (size before relaxing)
- .debug_str     0x00000000000019fb       0x63 ../../LUFA/Drivers/USB/HighLevel/USBTask.o
+ .debug_str     0x0000000000001a40       0x63 ../../LUFA/Drivers/USB/HighLevel/USBTask.o
                                         0x38f (size before relaxing)
- .debug_str     0x0000000000001a5e       0xfd ../../LUFA/Drivers/USB/Class/Device/HID.o
+ .debug_str     0x0000000000001aa3       0xfd ../../LUFA/Drivers/USB/Class/Device/HID.o
                                         0x72e (size before relaxing)
 
 .debug_loc      0x0000000000000000     0x28d1

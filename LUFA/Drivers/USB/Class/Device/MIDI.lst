@@ -1853,15 +1853,15 @@
  370               		.file 6 "../../LUFA/Drivers/USB/Class/Device/MIDI.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 MIDI.c
-     /tmp/ccWdiqvj.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccWdiqvj.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccWdiqvj.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccWdiqvj.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccWdiqvj.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccWdiqvj.s:13     .text.MIDI_Device_ConfigureEndpoints:0000000000000000 MIDI_Device_ConfigureEndpoints
-     /tmp/ccWdiqvj.s:146    .text.MIDI_Device_SendEventPacket:0000000000000000 MIDI_Device_SendEventPacket
-     /tmp/ccWdiqvj.s:234    .text.MIDI_Device_Flush:0000000000000000 MIDI_Device_Flush
-     /tmp/ccWdiqvj.s:291    .text.MIDI_Device_ReceiveEventPacket:0000000000000000 MIDI_Device_ReceiveEventPacket
+     /tmp/ccMCKQaM.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccMCKQaM.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccMCKQaM.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccMCKQaM.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccMCKQaM.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccMCKQaM.s:13     .text.MIDI_Device_ConfigureEndpoints:0000000000000000 MIDI_Device_ConfigureEndpoints
+     /tmp/ccMCKQaM.s:146    .text.MIDI_Device_SendEventPacket:0000000000000000 MIDI_Device_SendEventPacket
+     /tmp/ccMCKQaM.s:234    .text.MIDI_Device_Flush:0000000000000000 MIDI_Device_Flush
+     /tmp/ccMCKQaM.s:291    .text.MIDI_Device_ReceiveEventPacket:0000000000000000 MIDI_Device_ReceiveEventPacket
 
 UNDEFINED SYMBOLS
 Endpoint_BytesToEPSizeMaskDynamic

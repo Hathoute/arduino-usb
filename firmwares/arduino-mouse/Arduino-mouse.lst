@@ -1130,7 +1130,7 @@
  101:../../LUFA/Drivers/Peripheral/Serial.h **** 			{
  102:../../LUFA/Drivers/Peripheral/Serial.h **** 				UBRR1  = (DoubleSpeed ? SERIAL_2X_UBBRVAL(BaudRate) : SERIAL_UBBRVAL(BaudRate));
  121               		.loc 5 102 0
- 122 0020 88E0      		ldi r24,lo8(8)
+ 122 0020 8CE0      		ldi r24,lo8(12)
  123 0022 90E0      		ldi r25,0
  124 0024 9093 CD00 		sts 204+1,r25
  125 0028 8093 CC00 		sts 204,r24
@@ -1161,7 +1161,7 @@
  132:Arduino-mouse.c **** 	wdt_disable();
  133:Arduino-mouse.c **** 
  134:Arduino-mouse.c **** 	/* Hardware Initialization */
- 135:Arduino-mouse.c **** 	Serial_Init(115200, false);
+ 135:Arduino-mouse.c **** 	Serial_Init(76800, false);
  136:Arduino-mouse.c **** 	USB_Init();
  143               		.loc 3 136 0
  144 0042 0E94 0000 		call USB_Init
@@ -2078,25 +2078,25 @@
  605               		.file 11 "../../LUFA/Drivers/USB/HighLevel/USBTask.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 Arduino-mouse.c
-     /tmp/ccSFtSk5.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccSFtSk5.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccSFtSk5.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccSFtSk5.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccSFtSk5.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccSFtSk5.s:12     .text.RingBuffer_Remove.constprop.3:0000000000000000 RingBuffer_Remove.constprop.3
+     /tmp/ccJihHoC.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccJihHoC.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccJihHoC.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccJihHoC.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccJihHoC.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccJihHoC.s:12     .text.RingBuffer_Remove.constprop.3:0000000000000000 RingBuffer_Remove.constprop.3
                             *COM*:0000000000000085 USARTtoUSB_Buffer
-     /tmp/ccSFtSk5.s:77     .text.SetupHardware:0000000000000000 SetupHardware
-     /tmp/ccSFtSk5.s:163    .text.startup.main:0000000000000000 main
+     /tmp/ccJihHoC.s:77     .text.SetupHardware:0000000000000000 SetupHardware
+     /tmp/ccJihHoC.s:163    .text.startup.main:0000000000000000 main
                             *COM*:0000000000000003 mouseReport
-     /tmp/ccSFtSk5.s:591    .data:0000000000000000 Mouse_HID_Interface
-     /tmp/ccSFtSk5.s:294    .text.EVENT_USB_Device_Connect:0000000000000000 EVENT_USB_Device_Connect
-     /tmp/ccSFtSk5.s:308    .text.EVENT_USB_Device_Disconnect:0000000000000000 EVENT_USB_Device_Disconnect
-     /tmp/ccSFtSk5.s:323    .text.EVENT_USB_Device_ConfigurationChanged:0000000000000000 EVENT_USB_Device_ConfigurationChanged
-     /tmp/ccSFtSk5.s:354    .text.EVENT_USB_Device_UnhandledControlRequest:0000000000000000 EVENT_USB_Device_UnhandledControlRequest
-     /tmp/ccSFtSk5.s:373    .text.EVENT_USB_Device_StartOfFrame:0000000000000000 EVENT_USB_Device_StartOfFrame
-     /tmp/ccSFtSk5.s:405    .text.CALLBACK_HID_Device_CreateHIDReport:0000000000000000 CALLBACK_HID_Device_CreateHIDReport
-     /tmp/ccSFtSk5.s:451    .text.CALLBACK_HID_Device_ProcessHIDReport:0000000000000000 CALLBACK_HID_Device_ProcessHIDReport
-     /tmp/ccSFtSk5.s:467    .text.__vector_23:0000000000000000 __vector_23
+     /tmp/ccJihHoC.s:591    .data:0000000000000000 Mouse_HID_Interface
+     /tmp/ccJihHoC.s:294    .text.EVENT_USB_Device_Connect:0000000000000000 EVENT_USB_Device_Connect
+     /tmp/ccJihHoC.s:308    .text.EVENT_USB_Device_Disconnect:0000000000000000 EVENT_USB_Device_Disconnect
+     /tmp/ccJihHoC.s:323    .text.EVENT_USB_Device_ConfigurationChanged:0000000000000000 EVENT_USB_Device_ConfigurationChanged
+     /tmp/ccJihHoC.s:354    .text.EVENT_USB_Device_UnhandledControlRequest:0000000000000000 EVENT_USB_Device_UnhandledControlRequest
+     /tmp/ccJihHoC.s:373    .text.EVENT_USB_Device_StartOfFrame:0000000000000000 EVENT_USB_Device_StartOfFrame
+     /tmp/ccJihHoC.s:405    .text.CALLBACK_HID_Device_CreateHIDReport:0000000000000000 CALLBACK_HID_Device_CreateHIDReport
+     /tmp/ccJihHoC.s:451    .text.CALLBACK_HID_Device_ProcessHIDReport:0000000000000000 CALLBACK_HID_Device_ProcessHIDReport
+     /tmp/ccJihHoC.s:467    .text.__vector_23:0000000000000000 __vector_23
                             *COM*:0000000000000003 PrevMouseHIDReportBuffer
 
 UNDEFINED SYMBOLS

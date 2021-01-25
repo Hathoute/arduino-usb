@@ -3471,15 +3471,15 @@
  1549               		.file 9 "../../LUFA/Drivers/USB/Class/Device/../../HighLevel/USBTask.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 RNDIS.c
-     /tmp/ccFhlIEI.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccFhlIEI.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccFhlIEI.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccFhlIEI.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccFhlIEI.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccFhlIEI.s:13     .text.RNDIS_Device_ProcessControlRequest:0000000000000000 RNDIS_Device_ProcessControlRequest
-     /tmp/ccFhlIEI.s:1432   .progmem.data:0000000000000000 AdapterSupportedOIDList
-     /tmp/ccFhlIEI.s:887    .text.RNDIS_Device_ConfigureEndpoints:0000000000000000 RNDIS_Device_ConfigureEndpoints
-     /tmp/ccFhlIEI.s:1055   .text.RNDIS_Device_USBTask:0000000000000000 RNDIS_Device_USBTask
+     /tmp/ccOSGlIe.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccOSGlIe.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccOSGlIe.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccOSGlIe.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccOSGlIe.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccOSGlIe.s:13     .text.RNDIS_Device_ProcessControlRequest:0000000000000000 RNDIS_Device_ProcessControlRequest
+     /tmp/ccOSGlIe.s:1432   .progmem.data:0000000000000000 AdapterSupportedOIDList
+     /tmp/ccOSGlIe.s:887    .text.RNDIS_Device_ConfigureEndpoints:0000000000000000 RNDIS_Device_ConfigureEndpoints
+     /tmp/ccOSGlIe.s:1055   .text.RNDIS_Device_USBTask:0000000000000000 RNDIS_Device_USBTask
 
 UNDEFINED SYMBOLS
 USB_ControlRequest

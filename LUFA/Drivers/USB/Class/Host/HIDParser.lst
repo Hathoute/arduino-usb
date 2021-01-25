@@ -10,10 +10,10 @@
   10               	.Letext0:
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 HIDParser.c
-     /tmp/ccW95qzY.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccW95qzY.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccW95qzY.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccW95qzY.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccW95qzY.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccy0GNjx.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccy0GNjx.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccy0GNjx.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccy0GNjx.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccy0GNjx.s:6      *ABS*:0000000000000001 __zero_reg__
 
 NO UNDEFINED SYMBOLS
