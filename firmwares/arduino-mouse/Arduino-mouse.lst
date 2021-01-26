@@ -7,339 +7,11 @@
    7               		.text
    8               	.Ltext0:
    9               		.cfi_sections	.debug_frame
-  10               		.section	.text.RingBuffer_Remove.constprop.3,"ax",@progbits
-  12               	RingBuffer_Remove.constprop.3:
-  13               	.LFB107:
-  14               		.file 1 "Lib/LightweightRingBuff.h"
-   1:Lib/LightweightRingBuff.h **** /*
-   2:Lib/LightweightRingBuff.h ****              LUFA Library
-   3:Lib/LightweightRingBuff.h ****      Copyright (C) Dean Camera, 2010.
-   4:Lib/LightweightRingBuff.h ****               
-   5:Lib/LightweightRingBuff.h ****   dean [at] fourwalledcubicle [dot] com
-   6:Lib/LightweightRingBuff.h ****       www.fourwalledcubicle.com
-   7:Lib/LightweightRingBuff.h **** */
-   8:Lib/LightweightRingBuff.h **** 
-   9:Lib/LightweightRingBuff.h **** /*
-  10:Lib/LightweightRingBuff.h ****   Copyright 2010  Dean Camera (dean [at] fourwalledcubicle [dot] com)
-  11:Lib/LightweightRingBuff.h **** 
-  12:Lib/LightweightRingBuff.h ****   Permission to use, copy, modify, distribute, and sell this 
-  13:Lib/LightweightRingBuff.h ****   software and its documentation for any purpose is hereby granted
-  14:Lib/LightweightRingBuff.h ****   without fee, provided that the above copyright notice appear in 
-  15:Lib/LightweightRingBuff.h ****   all copies and that both that the copyright notice and this
-  16:Lib/LightweightRingBuff.h ****   permission notice and warranty disclaimer appear in supporting 
-  17:Lib/LightweightRingBuff.h ****   documentation, and that the name of the author not be used in 
-  18:Lib/LightweightRingBuff.h ****   advertising or publicity pertaining to distribution of the 
-  19:Lib/LightweightRingBuff.h ****   software without specific, written prior permission.
-  20:Lib/LightweightRingBuff.h **** 
-  21:Lib/LightweightRingBuff.h ****   The author disclaim all warranties with regard to this
-  22:Lib/LightweightRingBuff.h ****   software, including all implied warranties of merchantability
-  23:Lib/LightweightRingBuff.h ****   and fitness.  In no event shall the author be liable for any
-  24:Lib/LightweightRingBuff.h ****   special, indirect or consequential damages or any damages
-  25:Lib/LightweightRingBuff.h ****   whatsoever resulting from loss of use, data or profits, whether
-  26:Lib/LightweightRingBuff.h ****   in an action of contract, negligence or other tortious action,
-  27:Lib/LightweightRingBuff.h ****   arising out of or in connection with the use or performance of
-  28:Lib/LightweightRingBuff.h ****   this software.
-  29:Lib/LightweightRingBuff.h **** */
-  30:Lib/LightweightRingBuff.h **** 
-  31:Lib/LightweightRingBuff.h **** /** \file
-  32:Lib/LightweightRingBuff.h ****  *
-  33:Lib/LightweightRingBuff.h ****  *  Ultra lightweight ring buffer, for fast insertion/deletion.
-  34:Lib/LightweightRingBuff.h ****  */
-  35:Lib/LightweightRingBuff.h ****  
-  36:Lib/LightweightRingBuff.h **** #ifndef _ULW_RING_BUFF_H_
-  37:Lib/LightweightRingBuff.h **** #define _ULW_RING_BUFF_H_
-  38:Lib/LightweightRingBuff.h **** 
-  39:Lib/LightweightRingBuff.h **** 	/* Includes: */
-  40:Lib/LightweightRingBuff.h **** 		#include <util/atomic.h>
-  41:Lib/LightweightRingBuff.h **** 	
-  42:Lib/LightweightRingBuff.h **** 		#include <stdint.h>
-  43:Lib/LightweightRingBuff.h **** 		#include <stdbool.h>
-  44:Lib/LightweightRingBuff.h **** 
-  45:Lib/LightweightRingBuff.h **** 	/* Defines: */
-  46:Lib/LightweightRingBuff.h **** 		/** Size of each ring buffer, in data elements - must be between 1 and 255. */
-  47:Lib/LightweightRingBuff.h **** 		#define BUFFER_SIZE         128
-  48:Lib/LightweightRingBuff.h **** 		
-  49:Lib/LightweightRingBuff.h **** 		/** Maximum number of data elements to buffer before forcing a flush. 
-  50:Lib/LightweightRingBuff.h **** 		 *  Must be less than BUFFER_SIZE
-  51:Lib/LightweightRingBuff.h **** 		 */
-  52:Lib/LightweightRingBuff.h **** 		#define BUFFER_NEARLY_FULL	96
-  53:Lib/LightweightRingBuff.h **** 		
-  54:Lib/LightweightRingBuff.h **** 		/** Type of data to store into the buffer. */
-  55:Lib/LightweightRingBuff.h **** 		#define RingBuff_Data_t     uint8_t
-  56:Lib/LightweightRingBuff.h **** 
-  57:Lib/LightweightRingBuff.h **** 		/** Datatype which may be used to store the count of data stored in a buffer, retrieved
-  58:Lib/LightweightRingBuff.h **** 		 *  via a call to \ref RingBuffer_GetCount().
-  59:Lib/LightweightRingBuff.h **** 		 */
-  60:Lib/LightweightRingBuff.h **** 		#if (BUFFER_SIZE <= 0xFF)
-  61:Lib/LightweightRingBuff.h **** 			#define RingBuff_Count_t   uint8_t
-  62:Lib/LightweightRingBuff.h **** 		#else
-  63:Lib/LightweightRingBuff.h **** 			#define RingBuff_Count_t   uint16_t
-  64:Lib/LightweightRingBuff.h **** 		#endif
-  65:Lib/LightweightRingBuff.h **** 
-  66:Lib/LightweightRingBuff.h **** 	/* Type Defines: */
-  67:Lib/LightweightRingBuff.h **** 		/** Type define for a new ring buffer object. Buffers should be initialized via a call to
-  68:Lib/LightweightRingBuff.h **** 		 *  \ref RingBuffer_InitBuffer() before use.
-  69:Lib/LightweightRingBuff.h **** 		 */
-  70:Lib/LightweightRingBuff.h **** 		typedef struct
-  71:Lib/LightweightRingBuff.h **** 		{
-  72:Lib/LightweightRingBuff.h **** 			RingBuff_Data_t  Buffer[BUFFER_SIZE]; /**< Internal ring buffer data, referenced by the buffer p
-  73:Lib/LightweightRingBuff.h **** 			RingBuff_Data_t* In; /**< Current storage location in the circular buffer */
-  74:Lib/LightweightRingBuff.h **** 			RingBuff_Data_t* Out; /**< Current retrieval location in the circular buffer */
-  75:Lib/LightweightRingBuff.h **** 			RingBuff_Count_t Count;
-  76:Lib/LightweightRingBuff.h **** 		} RingBuff_t;
-  77:Lib/LightweightRingBuff.h **** 	
-  78:Lib/LightweightRingBuff.h **** 	/* Inline Functions: */
-  79:Lib/LightweightRingBuff.h **** 		/** Initializes a ring buffer ready for use. Buffers must be initialized via this function
-  80:Lib/LightweightRingBuff.h **** 		 *  before any operations are called upon them. Already initialized buffers may be reset
-  81:Lib/LightweightRingBuff.h **** 		 *  by re-initializing them using this function.
-  82:Lib/LightweightRingBuff.h **** 		 *
-  83:Lib/LightweightRingBuff.h **** 		 *  \param[out] Buffer  Pointer to a ring buffer structure to initialize
-  84:Lib/LightweightRingBuff.h **** 		 */
-  85:Lib/LightweightRingBuff.h **** 		static inline void RingBuffer_InitBuffer(RingBuff_t* const Buffer)
-  86:Lib/LightweightRingBuff.h **** 		{
-  87:Lib/LightweightRingBuff.h **** 			ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
-  88:Lib/LightweightRingBuff.h **** 			{
-  89:Lib/LightweightRingBuff.h **** 				Buffer->In  = Buffer->Buffer;
-  90:Lib/LightweightRingBuff.h **** 				Buffer->Out = Buffer->Buffer;
-  91:Lib/LightweightRingBuff.h **** 			}
-  92:Lib/LightweightRingBuff.h **** 		}
-  93:Lib/LightweightRingBuff.h **** 		
-  94:Lib/LightweightRingBuff.h **** 		/** Retrieves the minimum number of bytes stored in a particular buffer. This value is computed
-  95:Lib/LightweightRingBuff.h **** 		 *  by entering an atomic lock on the buffer while the IN and OUT locations are fetched, so that
-  96:Lib/LightweightRingBuff.h **** 		 *  the buffer cannot be modified while the computation takes place. This value should be cached
-  97:Lib/LightweightRingBuff.h **** 		 *  when reading out the contents of the buffer, so that as small a time as possible is spent
-  98:Lib/LightweightRingBuff.h **** 		 *  in an atomic lock.
-  99:Lib/LightweightRingBuff.h **** 		 *
- 100:Lib/LightweightRingBuff.h **** 		 *  \note The value returned by this function is guaranteed to only be the minimum number of byte
- 101:Lib/LightweightRingBuff.h **** 		 *        stored in the given buffer; this value may change as other threads write new data and s
- 102:Lib/LightweightRingBuff.h **** 		 *        the returned number should be used only to determine how many successive reads may safe
- 103:Lib/LightweightRingBuff.h **** 		 *        be performed on the buffer.
- 104:Lib/LightweightRingBuff.h **** 		 *
- 105:Lib/LightweightRingBuff.h **** 		 *  \param[in] Buffer  Pointer to a ring buffer structure whose count is to be computed
- 106:Lib/LightweightRingBuff.h **** 		 */
- 107:Lib/LightweightRingBuff.h **** 		static inline RingBuff_Count_t RingBuffer_GetCount(RingBuff_t* const Buffer)
- 108:Lib/LightweightRingBuff.h **** 		{
- 109:Lib/LightweightRingBuff.h **** 			RingBuff_Count_t Count;
- 110:Lib/LightweightRingBuff.h **** 			
- 111:Lib/LightweightRingBuff.h **** 			ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
- 112:Lib/LightweightRingBuff.h **** 			{
- 113:Lib/LightweightRingBuff.h **** 				Count = Buffer->Count;
- 114:Lib/LightweightRingBuff.h **** 			}
- 115:Lib/LightweightRingBuff.h **** 			
- 116:Lib/LightweightRingBuff.h **** 			return Count;
- 117:Lib/LightweightRingBuff.h **** 		}
- 118:Lib/LightweightRingBuff.h **** 		
- 119:Lib/LightweightRingBuff.h **** 		/** Atomically determines if the specified ring buffer contains any free space. This should
- 120:Lib/LightweightRingBuff.h **** 		 *  be tested before storing data to the buffer, to ensure that no data is lost due to a
- 121:Lib/LightweightRingBuff.h **** 		 *  buffer overrun.
- 122:Lib/LightweightRingBuff.h **** 		 *
- 123:Lib/LightweightRingBuff.h **** 		 *  \param[in,out] Buffer  Pointer to a ring buffer structure to insert into
- 124:Lib/LightweightRingBuff.h **** 		 *
- 125:Lib/LightweightRingBuff.h **** 		 *  \return Boolean true if the buffer contains no free space, false otherwise
- 126:Lib/LightweightRingBuff.h **** 		 */		 
- 127:Lib/LightweightRingBuff.h **** 		static inline bool RingBuffer_IsFull(RingBuff_t* const Buffer)
- 128:Lib/LightweightRingBuff.h **** 		{
- 129:Lib/LightweightRingBuff.h **** 			return (RingBuffer_GetCount(Buffer) == BUFFER_SIZE);
- 130:Lib/LightweightRingBuff.h **** 		}
- 131:Lib/LightweightRingBuff.h **** 
- 132:Lib/LightweightRingBuff.h **** 		/** Atomically determines if the specified ring buffer contains any data. This should
- 133:Lib/LightweightRingBuff.h **** 		 *  be tested before removing data from the buffer, to ensure that the buffer does not
- 134:Lib/LightweightRingBuff.h **** 		 *  underflow.
- 135:Lib/LightweightRingBuff.h **** 		 *
- 136:Lib/LightweightRingBuff.h **** 		 *  If the data is to be removed in a loop, store the total number of bytes stored in the
- 137:Lib/LightweightRingBuff.h **** 		 *  buffer (via a call to the \ref RingBuffer_GetCount() function) in a temporary variable
- 138:Lib/LightweightRingBuff.h **** 		 *  to reduce the time spent in atomicity locks.
- 139:Lib/LightweightRingBuff.h **** 		 *
- 140:Lib/LightweightRingBuff.h **** 		 *  \param[in,out] Buffer  Pointer to a ring buffer structure to insert into
- 141:Lib/LightweightRingBuff.h **** 		 *
- 142:Lib/LightweightRingBuff.h **** 		 *  \return Boolean true if the buffer contains no free space, false otherwise
- 143:Lib/LightweightRingBuff.h **** 		 */		 
- 144:Lib/LightweightRingBuff.h **** 		static inline bool RingBuffer_IsEmpty(RingBuff_t* const Buffer)
- 145:Lib/LightweightRingBuff.h **** 		{
- 146:Lib/LightweightRingBuff.h **** 			return (RingBuffer_GetCount(Buffer) == 0);
- 147:Lib/LightweightRingBuff.h **** 		}
- 148:Lib/LightweightRingBuff.h **** 
- 149:Lib/LightweightRingBuff.h **** 		/** Inserts an element into the ring buffer.
- 150:Lib/LightweightRingBuff.h **** 		 *
- 151:Lib/LightweightRingBuff.h **** 		 *  \note Only one execution thread (main program thread or an ISR) may insert into a single buff
- 152:Lib/LightweightRingBuff.h **** 		 *        otherwise data corruption may occur. Insertion and removal may occur from different exe
- 153:Lib/LightweightRingBuff.h **** 		 *        threads.
- 154:Lib/LightweightRingBuff.h **** 		 *
- 155:Lib/LightweightRingBuff.h **** 		 *  \param[in,out] Buffer  Pointer to a ring buffer structure to insert into
- 156:Lib/LightweightRingBuff.h **** 		 *  \param[in]     Data    Data element to insert into the buffer
- 157:Lib/LightweightRingBuff.h **** 		 */
- 158:Lib/LightweightRingBuff.h **** 		static inline void RingBuffer_Insert(RingBuff_t* const Buffer,
- 159:Lib/LightweightRingBuff.h **** 		                                     const RingBuff_Data_t Data)
- 160:Lib/LightweightRingBuff.h **** 		{
- 161:Lib/LightweightRingBuff.h **** 			*Buffer->In = Data;
- 162:Lib/LightweightRingBuff.h **** 			
- 163:Lib/LightweightRingBuff.h **** 			if (++Buffer->In == &Buffer->Buffer[BUFFER_SIZE])
- 164:Lib/LightweightRingBuff.h **** 			  Buffer->In = Buffer->Buffer;
- 165:Lib/LightweightRingBuff.h **** 
- 166:Lib/LightweightRingBuff.h **** 			ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
- 167:Lib/LightweightRingBuff.h **** 			{
- 168:Lib/LightweightRingBuff.h **** 				Buffer->Count++;
- 169:Lib/LightweightRingBuff.h **** 			}
- 170:Lib/LightweightRingBuff.h **** 		}
- 171:Lib/LightweightRingBuff.h **** 
- 172:Lib/LightweightRingBuff.h **** 		/** Removes an element from the ring buffer.
- 173:Lib/LightweightRingBuff.h **** 		 *
- 174:Lib/LightweightRingBuff.h **** 		 *  \note Only one execution thread (main program thread or an ISR) may remove from a single buff
- 175:Lib/LightweightRingBuff.h **** 		 *        otherwise data corruption may occur. Insertion and removal may occur from different exe
- 176:Lib/LightweightRingBuff.h **** 		 *        threads.
- 177:Lib/LightweightRingBuff.h **** 		 *
- 178:Lib/LightweightRingBuff.h **** 		 *  \param[in,out] Buffer  Pointer to a ring buffer structure to retrieve from
- 179:Lib/LightweightRingBuff.h **** 		 *
- 180:Lib/LightweightRingBuff.h **** 		 *  \return Next data element stored in the buffer
- 181:Lib/LightweightRingBuff.h **** 		 */
- 182:Lib/LightweightRingBuff.h **** 		static inline RingBuff_Data_t RingBuffer_Remove(RingBuff_t* const Buffer)
-  15               		.loc 1 182 0
-  16               		.cfi_startproc
-  17               	/* prologue: function */
-  18               	/* frame size = 0 */
-  19               	/* stack size = 0 */
-  20               	.L__stack_usage = 0
-  21               	.LVL0:
- 183:Lib/LightweightRingBuff.h **** 		{
- 184:Lib/LightweightRingBuff.h **** 			RingBuff_Data_t Data = *Buffer->Out;
-  22               		.loc 1 184 0
-  23 0000 E091 0000 		lds r30,USARTtoUSB_Buffer+130
-  24 0004 F091 0000 		lds r31,USARTtoUSB_Buffer+130+1
-  25 0008 8191      		ld r24,Z+
-  26               	.LVL1:
- 185:Lib/LightweightRingBuff.h **** 			
- 186:Lib/LightweightRingBuff.h **** 			if (++Buffer->Out == &Buffer->Buffer[BUFFER_SIZE])
-  27               		.loc 1 186 0
-  28 000a F093 0000 		sts USARTtoUSB_Buffer+130+1,r31
-  29 000e E093 0000 		sts USARTtoUSB_Buffer+130,r30
-  30 0012 E050      		subi r30,lo8(USARTtoUSB_Buffer+128)
-  31 0014 F040      		sbci r31,hi8(USARTtoUSB_Buffer+128)
-  32 0016 01F4      		brne .L2
- 187:Lib/LightweightRingBuff.h **** 			  Buffer->Out = Buffer->Buffer;
-  33               		.loc 1 187 0
-  34 0018 20E0      		ldi r18,lo8(USARTtoUSB_Buffer)
-  35 001a 30E0      		ldi r19,hi8(USARTtoUSB_Buffer)
-  36 001c 3093 0000 		sts USARTtoUSB_Buffer+130+1,r19
-  37 0020 2093 0000 		sts USARTtoUSB_Buffer+130,r18
-  38               	.L2:
-  39               	.LBB54:
- 188:Lib/LightweightRingBuff.h **** 
- 189:Lib/LightweightRingBuff.h **** 			ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
-  40               		.loc 1 189 0
-  41 0024 2FB7      		in r18,__SREG__
-  42               	.LVL2:
-  43               	.LBB55:
-  44               	.LBB56:
-  45               		.file 2 "/usr/lib/avr/include/util/atomic.h"
-   1:/usr/lib/avr/include/util/atomic.h **** /* Copyright (c) 2007 Dean Camera
-   2:/usr/lib/avr/include/util/atomic.h ****    All rights reserved.
-   3:/usr/lib/avr/include/util/atomic.h **** 
-   4:/usr/lib/avr/include/util/atomic.h ****    Redistribution and use in source and binary forms, with or without
-   5:/usr/lib/avr/include/util/atomic.h ****    modification, are permitted provided that the following conditions are met:
-   6:/usr/lib/avr/include/util/atomic.h **** 
-   7:/usr/lib/avr/include/util/atomic.h ****    * Redistributions of source code must retain the above copyright
-   8:/usr/lib/avr/include/util/atomic.h ****      notice, this list of conditions and the following disclaimer.
-   9:/usr/lib/avr/include/util/atomic.h **** 
-  10:/usr/lib/avr/include/util/atomic.h ****    * Redistributions in binary form must reproduce the above copyright
-  11:/usr/lib/avr/include/util/atomic.h ****      notice, this list of conditions and the following disclaimer in
-  12:/usr/lib/avr/include/util/atomic.h ****      the documentation and/or other materials provided with the
-  13:/usr/lib/avr/include/util/atomic.h ****      distribution.
-  14:/usr/lib/avr/include/util/atomic.h **** 
-  15:/usr/lib/avr/include/util/atomic.h ****    * Neither the name of the copyright holders nor the names of
-  16:/usr/lib/avr/include/util/atomic.h ****      contributors may be used to endorse or promote products derived
-  17:/usr/lib/avr/include/util/atomic.h ****      from this software without specific prior written permission.
-  18:/usr/lib/avr/include/util/atomic.h **** 
-  19:/usr/lib/avr/include/util/atomic.h ****   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-  20:/usr/lib/avr/include/util/atomic.h ****   AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-  21:/usr/lib/avr/include/util/atomic.h ****   IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-  22:/usr/lib/avr/include/util/atomic.h ****   ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-  23:/usr/lib/avr/include/util/atomic.h ****   LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-  24:/usr/lib/avr/include/util/atomic.h ****   CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-  25:/usr/lib/avr/include/util/atomic.h ****   SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-  26:/usr/lib/avr/include/util/atomic.h ****   INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-  27:/usr/lib/avr/include/util/atomic.h ****   CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-  28:/usr/lib/avr/include/util/atomic.h ****   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-  29:/usr/lib/avr/include/util/atomic.h ****   POSSIBILITY OF SUCH DAMAGE.
-  30:/usr/lib/avr/include/util/atomic.h **** */
-  31:/usr/lib/avr/include/util/atomic.h **** 
-  32:/usr/lib/avr/include/util/atomic.h **** /* $Id$ */
-  33:/usr/lib/avr/include/util/atomic.h **** 
-  34:/usr/lib/avr/include/util/atomic.h **** #ifndef _UTIL_ATOMIC_H_
-  35:/usr/lib/avr/include/util/atomic.h **** #define _UTIL_ATOMIC_H_ 1
-  36:/usr/lib/avr/include/util/atomic.h **** 
-  37:/usr/lib/avr/include/util/atomic.h **** #include <avr/io.h>
-  38:/usr/lib/avr/include/util/atomic.h **** #include <avr/interrupt.h>
-  39:/usr/lib/avr/include/util/atomic.h **** 
-  40:/usr/lib/avr/include/util/atomic.h **** #if !defined(__DOXYGEN__)
-  41:/usr/lib/avr/include/util/atomic.h **** /* Internal helper functions. */
-  42:/usr/lib/avr/include/util/atomic.h **** static __inline__ uint8_t __iSeiRetVal(void)
-  43:/usr/lib/avr/include/util/atomic.h **** {
-  44:/usr/lib/avr/include/util/atomic.h ****     sei();
-  45:/usr/lib/avr/include/util/atomic.h ****     return 1;
-  46:/usr/lib/avr/include/util/atomic.h **** }
-  47:/usr/lib/avr/include/util/atomic.h **** 
-  48:/usr/lib/avr/include/util/atomic.h **** static __inline__ uint8_t __iCliRetVal(void)
-  49:/usr/lib/avr/include/util/atomic.h **** {
-  50:/usr/lib/avr/include/util/atomic.h ****     cli();
-  46               		.loc 2 50 0
-  47               	/* #APP */
-  48               	 ;  50 "/usr/lib/avr/include/util/atomic.h" 1
-  49 0026 F894      		cli
-  50               	 ;  0 "" 2
-  51               	.LVL3:
-  52               	/* #NOAPP */
-  53               	.LBE56:
-  54               	.LBE55:
- 190:Lib/LightweightRingBuff.h **** 			{
- 191:Lib/LightweightRingBuff.h **** 				Buffer->Count--;
-  55               		.loc 1 191 0
-  56 0028 9091 0000 		lds r25,USARTtoUSB_Buffer+132
-  57 002c 9150      		subi r25,lo8(-(-1))
-  58 002e 9093 0000 		sts USARTtoUSB_Buffer+132,r25
-  59               	.LVL4:
-  60               	.LBB57:
-  61               	.LBB58:
-  51:/usr/lib/avr/include/util/atomic.h ****     return 1;
-  52:/usr/lib/avr/include/util/atomic.h **** }
-  53:/usr/lib/avr/include/util/atomic.h **** 
-  54:/usr/lib/avr/include/util/atomic.h **** static __inline__ void __iSeiParam(const uint8_t *__s)
-  55:/usr/lib/avr/include/util/atomic.h **** {
-  56:/usr/lib/avr/include/util/atomic.h ****     sei();
-  57:/usr/lib/avr/include/util/atomic.h ****     __asm__ volatile ("" ::: "memory");
-  58:/usr/lib/avr/include/util/atomic.h ****     (void)__s;
-  59:/usr/lib/avr/include/util/atomic.h **** }
-  60:/usr/lib/avr/include/util/atomic.h **** 
-  61:/usr/lib/avr/include/util/atomic.h **** static __inline__ void __iCliParam(const uint8_t *__s)
-  62:/usr/lib/avr/include/util/atomic.h **** {
-  63:/usr/lib/avr/include/util/atomic.h ****     cli();
-  64:/usr/lib/avr/include/util/atomic.h ****     __asm__ volatile ("" ::: "memory");
-  65:/usr/lib/avr/include/util/atomic.h ****     (void)__s;
-  66:/usr/lib/avr/include/util/atomic.h **** }
-  67:/usr/lib/avr/include/util/atomic.h **** 
-  68:/usr/lib/avr/include/util/atomic.h **** static __inline__ void __iRestore(const  uint8_t *__s)
-  69:/usr/lib/avr/include/util/atomic.h **** {
-  70:/usr/lib/avr/include/util/atomic.h ****     SREG = *__s;
-  62               		.loc 2 70 0
-  63 0032 2FBF      		out __SREG__,r18
-  71:/usr/lib/avr/include/util/atomic.h ****     __asm__ volatile ("" ::: "memory");
-  64               		.loc 2 71 0
-  65               	.LVL5:
-  66               	.LBE58:
-  67               	.LBE57:
-  68               	.LBE54:
- 192:Lib/LightweightRingBuff.h **** 			}
- 193:Lib/LightweightRingBuff.h **** 			
- 194:Lib/LightweightRingBuff.h **** 			return Data;
- 195:Lib/LightweightRingBuff.h **** 		}
-  69               		.loc 1 195 0
-  70 0034 0895      		ret
-  71               		.cfi_endproc
-  72               	.LFE107:
-  74               		.section	.text.SetupHardware,"ax",@progbits
-  75               	.global	SetupHardware
-  77               	SetupHardware:
-  78               	.LFB91:
-  79               		.file 3 "Arduino-mouse.c"
+  10               		.section	.text.SetupHardware,"ax",@progbits
+  11               	.global	SetupHardware
+  13               	SetupHardware:
+  14               	.LFB91:
+  15               		.file 1 "Arduino-mouse.c"
    1:Arduino-mouse.c **** /*
    2:Arduino-mouse.c ****              LUFA Library
    3:Arduino-mouse.c ****      Copyright (C) Dean Camera, 2010.
@@ -431,67 +103,69 @@
   89:Arduino-mouse.c **** RingBuff_t USARTtoUSB_Buffer;
   90:Arduino-mouse.c **** 
   91:Arduino-mouse.c **** USB_MouseReport_Data_t mouseReport;
-  92:Arduino-mouse.c **** 
-  93:Arduino-mouse.c **** /** Main program entry point. This routine contains the overall program flow, including initial
-  94:Arduino-mouse.c ****  *  setup of all components and the main program loop.
-  95:Arduino-mouse.c ****  */
-  96:Arduino-mouse.c **** int main(void)
-  97:Arduino-mouse.c **** {
-  98:Arduino-mouse.c **** 	USB_MouseReport_Data_t newReport;
-  99:Arduino-mouse.c **** 	int ind;
- 100:Arduino-mouse.c **** 
- 101:Arduino-mouse.c **** 	SetupHardware();
- 102:Arduino-mouse.c **** 
- 103:Arduino-mouse.c **** 	RingBuffer_InitBuffer(&USARTtoUSB_Buffer);
- 104:Arduino-mouse.c **** 
- 105:Arduino-mouse.c **** 	sei();
- 106:Arduino-mouse.c **** 
- 107:Arduino-mouse.c **** 	for (;;) {
- 108:Arduino-mouse.c **** 	    RingBuff_Count_t BufferCount = RingBuffer_GetCount(&USARTtoUSB_Buffer);
- 109:Arduino-mouse.c **** 
- 110:Arduino-mouse.c **** 	    if (BufferCount >= 4) {
- 111:Arduino-mouse.c **** 		for (ind=0; ind<3; ind++) {
- 112:Arduino-mouse.c **** 		    ((uint8_t *)&newReport)[ind] = RingBuffer_Remove(&USARTtoUSB_Buffer);
- 113:Arduino-mouse.c **** 		}
- 114:Arduino-mouse.c **** 
- 115:Arduino-mouse.c **** 		RingBuffer_Remove(&USARTtoUSB_Buffer);	// unused wheel for now
- 116:Arduino-mouse.c **** 
- 117:Arduino-mouse.c **** 		mouseReport.Button = newReport.Button;
- 118:Arduino-mouse.c **** 		mouseReport.X = newReport.X;
- 119:Arduino-mouse.c **** 		mouseReport.Y = newReport.Y;
- 120:Arduino-mouse.c **** 	    }
- 121:Arduino-mouse.c **** 
- 122:Arduino-mouse.c **** 	    HID_Device_USBTask(&Mouse_HID_Interface);
- 123:Arduino-mouse.c **** 	    USB_USBTask();
- 124:Arduino-mouse.c **** 	}
- 125:Arduino-mouse.c **** }
- 126:Arduino-mouse.c **** 
- 127:Arduino-mouse.c **** /** Configures the board hardware and chip peripherals for the demo's functionality. */
- 128:Arduino-mouse.c **** void SetupHardware(void)
- 129:Arduino-mouse.c **** {
-  80               		.loc 3 129 0
-  81               		.cfi_startproc
-  82 0000 CF93      		push r28
-  83               	.LCFI0:
-  84               		.cfi_def_cfa_offset 3
-  85               		.cfi_offset 28, -2
-  86 0002 DF93      		push r29
-  87               	.LCFI1:
-  88               		.cfi_def_cfa_offset 4
-  89               		.cfi_offset 29, -3
-  90               	/* prologue: function */
-  91               	/* frame size = 0 */
-  92               	/* stack size = 2 */
-  93               	.L__stack_usage = 2
- 130:Arduino-mouse.c **** 	/* Disable watchdog if enabled by bootloader/fuses */
- 131:Arduino-mouse.c **** 	MCUSR &= ~(1 << WDRF);
-  94               		.loc 3 131 0
-  95 0004 84B7      		in r24,0x34
-  96 0006 877F      		andi r24,lo8(-9)
-  97 0008 84BF      		out 0x34,r24
-  98               	.LBB63:
-  99               	.LBB64:
- 100               		.file 4 "/usr/lib/avr/include/avr/wdt.h"
+  92:Arduino-mouse.c **** bool isNewReport = false;
+  93:Arduino-mouse.c **** 
+  94:Arduino-mouse.c **** /** Main program entry point. This routine contains the overall program flow, including initial
+  95:Arduino-mouse.c ****  *  setup of all components and the main program loop.
+  96:Arduino-mouse.c ****  */
+  97:Arduino-mouse.c **** int main(void)
+  98:Arduino-mouse.c **** {
+  99:Arduino-mouse.c **** 	USB_MouseReport_Data_t newReport;
+ 100:Arduino-mouse.c **** 	int ind;
+ 101:Arduino-mouse.c **** 
+ 102:Arduino-mouse.c **** 	SetupHardware();
+ 103:Arduino-mouse.c **** 
+ 104:Arduino-mouse.c **** 	RingBuffer_InitBuffer(&USARTtoUSB_Buffer);
+ 105:Arduino-mouse.c **** 
+ 106:Arduino-mouse.c **** 	sei();
+ 107:Arduino-mouse.c **** 
+ 108:Arduino-mouse.c **** 	for (;;) {
+ 109:Arduino-mouse.c **** 	    RingBuff_Count_t BufferCount = RingBuffer_GetCount(&USARTtoUSB_Buffer);
+ 110:Arduino-mouse.c **** 
+ 111:Arduino-mouse.c **** 	    if (BufferCount >= 4) {
+ 112:Arduino-mouse.c **** 			for (ind=0; ind<4; ind++) {
+ 113:Arduino-mouse.c **** 				((uint8_t *)&newReport)[ind] = RingBuffer_Remove(&USARTtoUSB_Buffer);
+ 114:Arduino-mouse.c **** 			}
+ 115:Arduino-mouse.c **** 
+ 116:Arduino-mouse.c **** 			isNewReport = true;
+ 117:Arduino-mouse.c **** 
+ 118:Arduino-mouse.c **** 			mouseReport.Button = newReport.Button;
+ 119:Arduino-mouse.c **** 			mouseReport.X = newReport.X;
+ 120:Arduino-mouse.c **** 			mouseReport.Y = newReport.Y;
+ 121:Arduino-mouse.c **** 			mouseReport.Wheel = newReport.Wheel;
+ 122:Arduino-mouse.c **** 	    }
+ 123:Arduino-mouse.c **** 
+ 124:Arduino-mouse.c **** 	    HID_Device_USBTask(&Mouse_HID_Interface);
+ 125:Arduino-mouse.c **** 	    USB_USBTask();
+ 126:Arduino-mouse.c **** 	}
+ 127:Arduino-mouse.c **** }
+ 128:Arduino-mouse.c **** 
+ 129:Arduino-mouse.c **** /** Configures the board hardware and chip peripherals for the demo's functionality. */
+ 130:Arduino-mouse.c **** void SetupHardware(void)
+ 131:Arduino-mouse.c **** {
+  16               		.loc 1 131 0
+  17               		.cfi_startproc
+  18 0000 CF93      		push r28
+  19               	.LCFI0:
+  20               		.cfi_def_cfa_offset 3
+  21               		.cfi_offset 28, -2
+  22 0002 DF93      		push r29
+  23               	.LCFI1:
+  24               		.cfi_def_cfa_offset 4
+  25               		.cfi_offset 29, -3
+  26               	/* prologue: function */
+  27               	/* frame size = 0 */
+  28               	/* stack size = 2 */
+  29               	.L__stack_usage = 2
+ 132:Arduino-mouse.c **** 	/* Disable watchdog if enabled by bootloader/fuses */
+ 133:Arduino-mouse.c **** 	MCUSR &= ~(1 << WDRF);
+  30               		.loc 1 133 0
+  31 0004 84B7      		in r24,0x34
+  32 0006 877F      		andi r24,lo8(-9)
+  33 0008 84BF      		out 0x34,r24
+  34               	.LBB58:
+  35               	.LBB59:
+  36               		.file 2 "/usr/lib/avr/include/avr/wdt.h"
    1:/usr/lib/avr/include/avr/wdt.h **** /* Copyright (c) 2002, 2004 Marek Michalkiewicz
    2:/usr/lib/avr/include/avr/wdt.h ****    Copyright (c) 2005, 2006, 2007 Eric B. Weddington
    3:/usr/lib/avr/include/avr/wdt.h ****    All rights reserved.
@@ -1007,26 +681,26 @@
  513:/usr/lib/avr/include/avr/wdt.h **** 	{
  514:/usr/lib/avr/include/avr/wdt.h ****         uint8_t register temp_reg;
  515:/usr/lib/avr/include/avr/wdt.h **** 		__asm__ __volatile__ (
- 101               		.loc 4 515 0
- 102               	/* #APP */
- 103               	 ;  515 "/usr/lib/avr/include/avr/wdt.h" 1
- 104 000a 0FB6      		in __tmp_reg__,__SREG__
- 105 000c F894      		cli
- 106 000e A895      		wdr
- 107 0010 8091 6000 		lds r24,96
- 108 0014 8861      		ori r24,24
- 109 0016 8093 6000 		sts 96,r24
- 110 001a 1092 6000 		sts 96,__zero_reg__
- 111 001e 0FBE      		out __SREG__,__tmp_reg__
- 112               		
- 113               	 ;  0 "" 2
- 114               	.LVL6:
- 115               	/* #NOAPP */
- 116               	.LBE64:
- 117               	.LBE63:
- 118               	.LBB65:
- 119               	.LBB66:
- 120               		.file 5 "../../LUFA/Drivers/Peripheral/Serial.h"
+  37               		.loc 2 515 0
+  38               	/* #APP */
+  39               	 ;  515 "/usr/lib/avr/include/avr/wdt.h" 1
+  40 000a 0FB6      		in __tmp_reg__,__SREG__
+  41 000c F894      		cli
+  42 000e A895      		wdr
+  43 0010 8091 6000 		lds r24,96
+  44 0014 8861      		ori r24,24
+  45 0016 8093 6000 		sts 96,r24
+  46 001a 1092 6000 		sts 96,__zero_reg__
+  47 001e 0FBE      		out __SREG__,__tmp_reg__
+  48               		
+  49               	 ;  0 "" 2
+  50               	.LVL0:
+  51               	/* #NOAPP */
+  52               	.LBE59:
+  53               	.LBE58:
+  54               	.LBB60:
+  55               	.LBB61:
+  56               		.file 3 "../../LUFA/Drivers/Peripheral/Serial.h"
    1:../../LUFA/Drivers/Peripheral/Serial.h **** /*
    2:../../LUFA/Drivers/Peripheral/Serial.h ****              LUFA Library
    3:../../LUFA/Drivers/Peripheral/Serial.h ****      Copyright (C) Dean Camera, 2010.
@@ -1129,271 +803,613 @@
  100:../../LUFA/Drivers/Peripheral/Serial.h **** 			                               const bool DoubleSpeed)
  101:../../LUFA/Drivers/Peripheral/Serial.h **** 			{
  102:../../LUFA/Drivers/Peripheral/Serial.h **** 				UBRR1  = (DoubleSpeed ? SERIAL_2X_UBBRVAL(BaudRate) : SERIAL_UBBRVAL(BaudRate));
- 121               		.loc 5 102 0
- 122 0020 8CE0      		ldi r24,lo8(12)
- 123 0022 90E0      		ldi r25,0
- 124 0024 9093 CD00 		sts 204+1,r25
- 125 0028 8093 CC00 		sts 204,r24
+  57               		.loc 3 102 0
+  58 0020 8CE0      		ldi r24,lo8(12)
+  59 0022 90E0      		ldi r25,0
+  60 0024 9093 CD00 		sts 204+1,r25
+  61 0028 8093 CC00 		sts 204,r24
  103:../../LUFA/Drivers/Peripheral/Serial.h **** 
  104:../../LUFA/Drivers/Peripheral/Serial.h **** 				UCSR1C = ((1 << UCSZ11) | (1 << UCSZ10));
- 126               		.loc 5 104 0
- 127 002c 86E0      		ldi r24,lo8(6)
- 128 002e 8093 CA00 		sts 202,r24
+  62               		.loc 3 104 0
+  63 002c 86E0      		ldi r24,lo8(6)
+  64 002e 8093 CA00 		sts 202,r24
  105:../../LUFA/Drivers/Peripheral/Serial.h **** 				UCSR1A = (DoubleSpeed ? (1 << U2X1) : 0);
- 129               		.loc 5 105 0
- 130 0032 1092 C800 		sts 200,__zero_reg__
+  65               		.loc 3 105 0
+  66 0032 1092 C800 		sts 200,__zero_reg__
  106:../../LUFA/Drivers/Peripheral/Serial.h **** 				UCSR1B = ((1 << TXEN1)  | (1 << RXEN1));
- 131               		.loc 5 106 0
- 132 0036 C9EC      		ldi r28,lo8(-55)
- 133 0038 D0E0      		ldi r29,0
- 134 003a 88E1      		ldi r24,lo8(24)
- 135 003c 8883      		st Y,r24
+  67               		.loc 3 106 0
+  68 0036 C9EC      		ldi r28,lo8(-55)
+  69 0038 D0E0      		ldi r29,0
+  70 003a 88E1      		ldi r24,lo8(24)
+  71 003c 8883      		st Y,r24
  107:../../LUFA/Drivers/Peripheral/Serial.h **** 				
  108:../../LUFA/Drivers/Peripheral/Serial.h **** 				DDRD  |= (1 << 3);
- 136               		.loc 5 108 0
- 137 003e 539A      		sbi 0xa,3
+  72               		.loc 3 108 0
+  73 003e 539A      		sbi 0xa,3
  109:../../LUFA/Drivers/Peripheral/Serial.h **** 				PORTD |= (1 << 2);
- 138               		.loc 5 109 0
- 139 0040 5A9A      		sbi 0xb,2
- 140               	.LVL7:
- 141               	.LBE66:
- 142               	.LBE65:
- 132:Arduino-mouse.c **** 	wdt_disable();
- 133:Arduino-mouse.c **** 
- 134:Arduino-mouse.c **** 	/* Hardware Initialization */
- 135:Arduino-mouse.c **** 	Serial_Init(76800, false);
- 136:Arduino-mouse.c **** 	USB_Init();
- 143               		.loc 3 136 0
- 144 0042 0E94 0000 		call USB_Init
- 145               	.LVL8:
- 137:Arduino-mouse.c **** 
- 138:Arduino-mouse.c **** 	/* Start the flush timer so that overflows occur rapidly to push received bytes to the USB interfa
- 139:Arduino-mouse.c **** 	TCCR0B = (1 << CS02);
- 146               		.loc 3 139 0
- 147 0046 84E0      		ldi r24,lo8(4)
- 148 0048 85BD      		out 0x25,r24
- 140:Arduino-mouse.c **** 	
- 141:Arduino-mouse.c **** 	UCSR1B = ((1 << RXCIE1) | (1 << TXEN1) | (1 << RXEN1));
- 149               		.loc 3 141 0
- 150 004a 88E9      		ldi r24,lo8(-104)
- 151 004c 8883      		st Y,r24
- 152               	/* epilogue start */
- 142:Arduino-mouse.c **** }
- 153               		.loc 3 142 0
- 154 004e DF91      		pop r29
- 155 0050 CF91      		pop r28
- 156 0052 0895      		ret
- 157               		.cfi_endproc
- 158               	.LFE91:
- 160               		.section	.text.startup.main,"ax",@progbits
- 161               	.global	main
- 163               	main:
- 164               	.LFB90:
-  97:Arduino-mouse.c **** 	USB_MouseReport_Data_t newReport;
- 165               		.loc 3 97 0
- 166               		.cfi_startproc
- 167               	/* prologue: function */
- 168               	/* frame size = 0 */
- 169               	/* stack size = 0 */
- 170               	.L__stack_usage = 0
- 101:Arduino-mouse.c **** 
- 171               		.loc 3 101 0
- 172 0000 0E94 0000 		call SetupHardware
- 173               	.LVL9:
- 174               	.LBB82:
- 175               	.LBB83:
-  87:Lib/LightweightRingBuff.h **** 			{
- 176               		.loc 1 87 0
- 177 0004 2FB7      		in r18,__SREG__
- 178               	.LVL10:
- 179               	.LBB84:
- 180               	.LBB85:
-  50:/usr/lib/avr/include/util/atomic.h ****     return 1;
- 181               		.loc 2 50 0
- 182               	/* #APP */
- 183               	 ;  50 "/usr/lib/avr/include/util/atomic.h" 1
- 184 0006 F894      		cli
- 185               	 ;  0 "" 2
- 186               	.LVL11:
- 187               	/* #NOAPP */
- 188               	.LBE85:
- 189               	.LBE84:
-  89:Lib/LightweightRingBuff.h **** 				Buffer->Out = Buffer->Buffer;
- 190               		.loc 1 89 0
- 191 0008 80E0      		ldi r24,lo8(USARTtoUSB_Buffer)
- 192 000a 90E0      		ldi r25,hi8(USARTtoUSB_Buffer)
- 193 000c 9093 0000 		sts USARTtoUSB_Buffer+128+1,r25
- 194 0010 8093 0000 		sts USARTtoUSB_Buffer+128,r24
-  90:Lib/LightweightRingBuff.h **** 			}
- 195               		.loc 1 90 0
- 196 0014 9093 0000 		sts USARTtoUSB_Buffer+130+1,r25
- 197 0018 8093 0000 		sts USARTtoUSB_Buffer+130,r24
- 198               	.LVL12:
- 199               	.LBB86:
- 200               	.LBB87:
-  70:/usr/lib/avr/include/util/atomic.h ****     __asm__ volatile ("" ::: "memory");
- 201               		.loc 2 70 0
- 202 001c 2FBF      		out __SREG__,r18
- 203               		.loc 2 71 0
- 204               	.LVL13:
- 205               	.LBE87:
- 206               	.LBE86:
- 207               	.LBE83:
- 208               	.LBE82:
- 105:Arduino-mouse.c **** 
- 209               		.loc 3 105 0
- 210               	/* #APP */
- 211               	 ;  105 "Arduino-mouse.c" 1
- 212 001e 7894      		sei
- 213               	 ;  0 "" 2
- 214               	.LVL14:
- 215               	/* #NOAPP */
- 216               	.L7:
- 217               	.LBB88:
- 218               	.LBB89:
- 219               	.LBB90:
- 220               	.LBB91:
+  74               		.loc 3 109 0
+  75 0040 5A9A      		sbi 0xb,2
+  76               	.LVL1:
+  77               	.LBE61:
+  78               	.LBE60:
+ 134:Arduino-mouse.c **** 	wdt_disable();
+ 135:Arduino-mouse.c **** 
+ 136:Arduino-mouse.c **** 	/* Hardware Initialization */
+ 137:Arduino-mouse.c **** 	Serial_Init(76800, false);
+ 138:Arduino-mouse.c **** 	USB_Init();
+  79               		.loc 1 138 0
+  80 0042 0E94 0000 		call USB_Init
+  81               	.LVL2:
+ 139:Arduino-mouse.c **** 
+ 140:Arduino-mouse.c **** 	/* Start the flush timer so that overflows occur rapidly to push received bytes to the USB interfa
+ 141:Arduino-mouse.c **** 	TCCR0B = (1 << CS02);
+  82               		.loc 1 141 0
+  83 0046 84E0      		ldi r24,lo8(4)
+  84 0048 85BD      		out 0x25,r24
+ 142:Arduino-mouse.c **** 	
+ 143:Arduino-mouse.c **** 	UCSR1B = ((1 << RXCIE1) | (1 << TXEN1) | (1 << RXEN1));
+  85               		.loc 1 143 0
+  86 004a 88E9      		ldi r24,lo8(-104)
+  87 004c 8883      		st Y,r24
+  88               	/* epilogue start */
+ 144:Arduino-mouse.c **** }
+  89               		.loc 1 144 0
+  90 004e DF91      		pop r29
+  91 0050 CF91      		pop r28
+  92 0052 0895      		ret
+  93               		.cfi_endproc
+  94               	.LFE91:
+  96               		.section	.text.startup.main,"ax",@progbits
+  97               	.global	main
+  99               	main:
+ 100               	.LFB90:
+  98:Arduino-mouse.c **** 	USB_MouseReport_Data_t newReport;
+ 101               		.loc 1 98 0
+ 102               		.cfi_startproc
+ 103 0000 CF93      		push r28
+ 104               	.LCFI2:
+ 105               		.cfi_def_cfa_offset 3
+ 106               		.cfi_offset 28, -2
+ 107 0002 DF93      		push r29
+ 108               	.LCFI3:
+ 109               		.cfi_def_cfa_offset 4
+ 110               		.cfi_offset 29, -3
+ 111 0004 00D0      		rcall .
+ 112 0006 00D0      		rcall .
+ 113               	.LCFI4:
+ 114               		.cfi_def_cfa_offset 8
+ 115 0008 CDB7      		in r28,__SP_L__
+ 116 000a DEB7      		in r29,__SP_H__
+ 117               	.LCFI5:
+ 118               		.cfi_def_cfa_register 28
+ 119               	/* prologue: function */
+ 120               	/* frame size = 4 */
+ 121               	/* stack size = 6 */
+ 122               	.L__stack_usage = 6
+ 102:Arduino-mouse.c **** 
+ 123               		.loc 1 102 0
+ 124 000c 0E94 0000 		call SetupHardware
+ 125               	.LVL3:
+ 126               	.LBB84:
+ 127               	.LBB85:
+ 128               		.file 4 "Lib/LightweightRingBuff.h"
+   1:Lib/LightweightRingBuff.h **** /*
+   2:Lib/LightweightRingBuff.h ****              LUFA Library
+   3:Lib/LightweightRingBuff.h ****      Copyright (C) Dean Camera, 2010.
+   4:Lib/LightweightRingBuff.h ****               
+   5:Lib/LightweightRingBuff.h ****   dean [at] fourwalledcubicle [dot] com
+   6:Lib/LightweightRingBuff.h ****       www.fourwalledcubicle.com
+   7:Lib/LightweightRingBuff.h **** */
+   8:Lib/LightweightRingBuff.h **** 
+   9:Lib/LightweightRingBuff.h **** /*
+  10:Lib/LightweightRingBuff.h ****   Copyright 2010  Dean Camera (dean [at] fourwalledcubicle [dot] com)
+  11:Lib/LightweightRingBuff.h **** 
+  12:Lib/LightweightRingBuff.h ****   Permission to use, copy, modify, distribute, and sell this 
+  13:Lib/LightweightRingBuff.h ****   software and its documentation for any purpose is hereby granted
+  14:Lib/LightweightRingBuff.h ****   without fee, provided that the above copyright notice appear in 
+  15:Lib/LightweightRingBuff.h ****   all copies and that both that the copyright notice and this
+  16:Lib/LightweightRingBuff.h ****   permission notice and warranty disclaimer appear in supporting 
+  17:Lib/LightweightRingBuff.h ****   documentation, and that the name of the author not be used in 
+  18:Lib/LightweightRingBuff.h ****   advertising or publicity pertaining to distribution of the 
+  19:Lib/LightweightRingBuff.h ****   software without specific, written prior permission.
+  20:Lib/LightweightRingBuff.h **** 
+  21:Lib/LightweightRingBuff.h ****   The author disclaim all warranties with regard to this
+  22:Lib/LightweightRingBuff.h ****   software, including all implied warranties of merchantability
+  23:Lib/LightweightRingBuff.h ****   and fitness.  In no event shall the author be liable for any
+  24:Lib/LightweightRingBuff.h ****   special, indirect or consequential damages or any damages
+  25:Lib/LightweightRingBuff.h ****   whatsoever resulting from loss of use, data or profits, whether
+  26:Lib/LightweightRingBuff.h ****   in an action of contract, negligence or other tortious action,
+  27:Lib/LightweightRingBuff.h ****   arising out of or in connection with the use or performance of
+  28:Lib/LightweightRingBuff.h ****   this software.
+  29:Lib/LightweightRingBuff.h **** */
+  30:Lib/LightweightRingBuff.h **** 
+  31:Lib/LightweightRingBuff.h **** /** \file
+  32:Lib/LightweightRingBuff.h ****  *
+  33:Lib/LightweightRingBuff.h ****  *  Ultra lightweight ring buffer, for fast insertion/deletion.
+  34:Lib/LightweightRingBuff.h ****  */
+  35:Lib/LightweightRingBuff.h ****  
+  36:Lib/LightweightRingBuff.h **** #ifndef _ULW_RING_BUFF_H_
+  37:Lib/LightweightRingBuff.h **** #define _ULW_RING_BUFF_H_
+  38:Lib/LightweightRingBuff.h **** 
+  39:Lib/LightweightRingBuff.h **** 	/* Includes: */
+  40:Lib/LightweightRingBuff.h **** 		#include <util/atomic.h>
+  41:Lib/LightweightRingBuff.h **** 	
+  42:Lib/LightweightRingBuff.h **** 		#include <stdint.h>
+  43:Lib/LightweightRingBuff.h **** 		#include <stdbool.h>
+  44:Lib/LightweightRingBuff.h **** 
+  45:Lib/LightweightRingBuff.h **** 	/* Defines: */
+  46:Lib/LightweightRingBuff.h **** 		/** Size of each ring buffer, in data elements - must be between 1 and 255. */
+  47:Lib/LightweightRingBuff.h **** 		#define BUFFER_SIZE         128
+  48:Lib/LightweightRingBuff.h **** 		
+  49:Lib/LightweightRingBuff.h **** 		/** Maximum number of data elements to buffer before forcing a flush. 
+  50:Lib/LightweightRingBuff.h **** 		 *  Must be less than BUFFER_SIZE
+  51:Lib/LightweightRingBuff.h **** 		 */
+  52:Lib/LightweightRingBuff.h **** 		#define BUFFER_NEARLY_FULL	96
+  53:Lib/LightweightRingBuff.h **** 		
+  54:Lib/LightweightRingBuff.h **** 		/** Type of data to store into the buffer. */
+  55:Lib/LightweightRingBuff.h **** 		#define RingBuff_Data_t     uint8_t
+  56:Lib/LightweightRingBuff.h **** 
+  57:Lib/LightweightRingBuff.h **** 		/** Datatype which may be used to store the count of data stored in a buffer, retrieved
+  58:Lib/LightweightRingBuff.h **** 		 *  via a call to \ref RingBuffer_GetCount().
+  59:Lib/LightweightRingBuff.h **** 		 */
+  60:Lib/LightweightRingBuff.h **** 		#if (BUFFER_SIZE <= 0xFF)
+  61:Lib/LightweightRingBuff.h **** 			#define RingBuff_Count_t   uint8_t
+  62:Lib/LightweightRingBuff.h **** 		#else
+  63:Lib/LightweightRingBuff.h **** 			#define RingBuff_Count_t   uint16_t
+  64:Lib/LightweightRingBuff.h **** 		#endif
+  65:Lib/LightweightRingBuff.h **** 
+  66:Lib/LightweightRingBuff.h **** 	/* Type Defines: */
+  67:Lib/LightweightRingBuff.h **** 		/** Type define for a new ring buffer object. Buffers should be initialized via a call to
+  68:Lib/LightweightRingBuff.h **** 		 *  \ref RingBuffer_InitBuffer() before use.
+  69:Lib/LightweightRingBuff.h **** 		 */
+  70:Lib/LightweightRingBuff.h **** 		typedef struct
+  71:Lib/LightweightRingBuff.h **** 		{
+  72:Lib/LightweightRingBuff.h **** 			RingBuff_Data_t  Buffer[BUFFER_SIZE]; /**< Internal ring buffer data, referenced by the buffer p
+  73:Lib/LightweightRingBuff.h **** 			RingBuff_Data_t* In; /**< Current storage location in the circular buffer */
+  74:Lib/LightweightRingBuff.h **** 			RingBuff_Data_t* Out; /**< Current retrieval location in the circular buffer */
+  75:Lib/LightweightRingBuff.h **** 			RingBuff_Count_t Count;
+  76:Lib/LightweightRingBuff.h **** 		} RingBuff_t;
+  77:Lib/LightweightRingBuff.h **** 	
+  78:Lib/LightweightRingBuff.h **** 	/* Inline Functions: */
+  79:Lib/LightweightRingBuff.h **** 		/** Initializes a ring buffer ready for use. Buffers must be initialized via this function
+  80:Lib/LightweightRingBuff.h **** 		 *  before any operations are called upon them. Already initialized buffers may be reset
+  81:Lib/LightweightRingBuff.h **** 		 *  by re-initializing them using this function.
+  82:Lib/LightweightRingBuff.h **** 		 *
+  83:Lib/LightweightRingBuff.h **** 		 *  \param[out] Buffer  Pointer to a ring buffer structure to initialize
+  84:Lib/LightweightRingBuff.h **** 		 */
+  85:Lib/LightweightRingBuff.h **** 		static inline void RingBuffer_InitBuffer(RingBuff_t* const Buffer)
+  86:Lib/LightweightRingBuff.h **** 		{
+  87:Lib/LightweightRingBuff.h **** 			ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+ 129               		.loc 4 87 0
+ 130 0010 2FB7      		in r18,__SREG__
+ 131               	.LVL4:
+ 132               	.LBB86:
+ 133               	.LBB87:
+ 134               		.file 5 "/usr/lib/avr/include/util/atomic.h"
+   1:/usr/lib/avr/include/util/atomic.h **** /* Copyright (c) 2007 Dean Camera
+   2:/usr/lib/avr/include/util/atomic.h ****    All rights reserved.
+   3:/usr/lib/avr/include/util/atomic.h **** 
+   4:/usr/lib/avr/include/util/atomic.h ****    Redistribution and use in source and binary forms, with or without
+   5:/usr/lib/avr/include/util/atomic.h ****    modification, are permitted provided that the following conditions are met:
+   6:/usr/lib/avr/include/util/atomic.h **** 
+   7:/usr/lib/avr/include/util/atomic.h ****    * Redistributions of source code must retain the above copyright
+   8:/usr/lib/avr/include/util/atomic.h ****      notice, this list of conditions and the following disclaimer.
+   9:/usr/lib/avr/include/util/atomic.h **** 
+  10:/usr/lib/avr/include/util/atomic.h ****    * Redistributions in binary form must reproduce the above copyright
+  11:/usr/lib/avr/include/util/atomic.h ****      notice, this list of conditions and the following disclaimer in
+  12:/usr/lib/avr/include/util/atomic.h ****      the documentation and/or other materials provided with the
+  13:/usr/lib/avr/include/util/atomic.h ****      distribution.
+  14:/usr/lib/avr/include/util/atomic.h **** 
+  15:/usr/lib/avr/include/util/atomic.h ****    * Neither the name of the copyright holders nor the names of
+  16:/usr/lib/avr/include/util/atomic.h ****      contributors may be used to endorse or promote products derived
+  17:/usr/lib/avr/include/util/atomic.h ****      from this software without specific prior written permission.
+  18:/usr/lib/avr/include/util/atomic.h **** 
+  19:/usr/lib/avr/include/util/atomic.h ****   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  20:/usr/lib/avr/include/util/atomic.h ****   AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  21:/usr/lib/avr/include/util/atomic.h ****   IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  22:/usr/lib/avr/include/util/atomic.h ****   ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+  23:/usr/lib/avr/include/util/atomic.h ****   LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  24:/usr/lib/avr/include/util/atomic.h ****   CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+  25:/usr/lib/avr/include/util/atomic.h ****   SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+  26:/usr/lib/avr/include/util/atomic.h ****   INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+  27:/usr/lib/avr/include/util/atomic.h ****   CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+  28:/usr/lib/avr/include/util/atomic.h ****   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+  29:/usr/lib/avr/include/util/atomic.h ****   POSSIBILITY OF SUCH DAMAGE.
+  30:/usr/lib/avr/include/util/atomic.h **** */
+  31:/usr/lib/avr/include/util/atomic.h **** 
+  32:/usr/lib/avr/include/util/atomic.h **** /* $Id$ */
+  33:/usr/lib/avr/include/util/atomic.h **** 
+  34:/usr/lib/avr/include/util/atomic.h **** #ifndef _UTIL_ATOMIC_H_
+  35:/usr/lib/avr/include/util/atomic.h **** #define _UTIL_ATOMIC_H_ 1
+  36:/usr/lib/avr/include/util/atomic.h **** 
+  37:/usr/lib/avr/include/util/atomic.h **** #include <avr/io.h>
+  38:/usr/lib/avr/include/util/atomic.h **** #include <avr/interrupt.h>
+  39:/usr/lib/avr/include/util/atomic.h **** 
+  40:/usr/lib/avr/include/util/atomic.h **** #if !defined(__DOXYGEN__)
+  41:/usr/lib/avr/include/util/atomic.h **** /* Internal helper functions. */
+  42:/usr/lib/avr/include/util/atomic.h **** static __inline__ uint8_t __iSeiRetVal(void)
+  43:/usr/lib/avr/include/util/atomic.h **** {
+  44:/usr/lib/avr/include/util/atomic.h ****     sei();
+  45:/usr/lib/avr/include/util/atomic.h ****     return 1;
+  46:/usr/lib/avr/include/util/atomic.h **** }
+  47:/usr/lib/avr/include/util/atomic.h **** 
+  48:/usr/lib/avr/include/util/atomic.h **** static __inline__ uint8_t __iCliRetVal(void)
+  49:/usr/lib/avr/include/util/atomic.h **** {
+  50:/usr/lib/avr/include/util/atomic.h ****     cli();
+ 135               		.loc 5 50 0
+ 136               	/* #APP */
+ 137               	 ;  50 "/usr/lib/avr/include/util/atomic.h" 1
+ 138 0012 F894      		cli
+ 139               	 ;  0 "" 2
+ 140               	.LVL5:
+ 141               	/* #NOAPP */
+ 142               	.LBE87:
+ 143               	.LBE86:
+  88:Lib/LightweightRingBuff.h **** 			{
+  89:Lib/LightweightRingBuff.h **** 				Buffer->In  = Buffer->Buffer;
+ 144               		.loc 4 89 0
+ 145 0014 80E0      		ldi r24,lo8(USARTtoUSB_Buffer)
+ 146 0016 90E0      		ldi r25,hi8(USARTtoUSB_Buffer)
+ 147 0018 9093 0000 		sts USARTtoUSB_Buffer+128+1,r25
+ 148 001c 8093 0000 		sts USARTtoUSB_Buffer+128,r24
+  90:Lib/LightweightRingBuff.h **** 				Buffer->Out = Buffer->Buffer;
+ 149               		.loc 4 90 0
+ 150 0020 9093 0000 		sts USARTtoUSB_Buffer+130+1,r25
+ 151 0024 8093 0000 		sts USARTtoUSB_Buffer+130,r24
+ 152               	.LVL6:
+ 153               	.LBB88:
+ 154               	.LBB89:
+  51:/usr/lib/avr/include/util/atomic.h ****     return 1;
+  52:/usr/lib/avr/include/util/atomic.h **** }
+  53:/usr/lib/avr/include/util/atomic.h **** 
+  54:/usr/lib/avr/include/util/atomic.h **** static __inline__ void __iSeiParam(const uint8_t *__s)
+  55:/usr/lib/avr/include/util/atomic.h **** {
+  56:/usr/lib/avr/include/util/atomic.h ****     sei();
+  57:/usr/lib/avr/include/util/atomic.h ****     __asm__ volatile ("" ::: "memory");
+  58:/usr/lib/avr/include/util/atomic.h ****     (void)__s;
+  59:/usr/lib/avr/include/util/atomic.h **** }
+  60:/usr/lib/avr/include/util/atomic.h **** 
+  61:/usr/lib/avr/include/util/atomic.h **** static __inline__ void __iCliParam(const uint8_t *__s)
+  62:/usr/lib/avr/include/util/atomic.h **** {
+  63:/usr/lib/avr/include/util/atomic.h ****     cli();
+  64:/usr/lib/avr/include/util/atomic.h ****     __asm__ volatile ("" ::: "memory");
+  65:/usr/lib/avr/include/util/atomic.h ****     (void)__s;
+  66:/usr/lib/avr/include/util/atomic.h **** }
+  67:/usr/lib/avr/include/util/atomic.h **** 
+  68:/usr/lib/avr/include/util/atomic.h **** static __inline__ void __iRestore(const  uint8_t *__s)
+  69:/usr/lib/avr/include/util/atomic.h **** {
+  70:/usr/lib/avr/include/util/atomic.h ****     SREG = *__s;
+ 155               		.loc 5 70 0
+ 156 0028 2FBF      		out __SREG__,r18
+  71:/usr/lib/avr/include/util/atomic.h ****     __asm__ volatile ("" ::: "memory");
+ 157               		.loc 5 71 0
+ 158               	.LVL7:
+ 159               	.LBE89:
+ 160               	.LBE88:
+ 161               	.LBE85:
+ 162               	.LBE84:
+ 106:Arduino-mouse.c **** 
+ 163               		.loc 1 106 0
+ 164               	/* #APP */
+ 165               	 ;  106 "Arduino-mouse.c" 1
+ 166 002a 7894      		sei
+ 167               	 ;  0 "" 2
+ 168               	/* #NOAPP */
+ 169 002c 8E01      		movw r16,r28
+ 170 002e 0B5F      		subi r16,-5
+ 171 0030 1F4F      		sbci r17,-1
+ 172               	.LBB90:
+ 173               	.LBB91:
+ 174               	.LBB92:
+  91:Lib/LightweightRingBuff.h **** 			}
+  92:Lib/LightweightRingBuff.h **** 		}
+  93:Lib/LightweightRingBuff.h **** 		
+  94:Lib/LightweightRingBuff.h **** 		/** Retrieves the minimum number of bytes stored in a particular buffer. This value is computed
+  95:Lib/LightweightRingBuff.h **** 		 *  by entering an atomic lock on the buffer while the IN and OUT locations are fetched, so that
+  96:Lib/LightweightRingBuff.h **** 		 *  the buffer cannot be modified while the computation takes place. This value should be cached
+  97:Lib/LightweightRingBuff.h **** 		 *  when reading out the contents of the buffer, so that as small a time as possible is spent
+  98:Lib/LightweightRingBuff.h **** 		 *  in an atomic lock.
+  99:Lib/LightweightRingBuff.h **** 		 *
+ 100:Lib/LightweightRingBuff.h **** 		 *  \note The value returned by this function is guaranteed to only be the minimum number of byte
+ 101:Lib/LightweightRingBuff.h **** 		 *        stored in the given buffer; this value may change as other threads write new data and s
+ 102:Lib/LightweightRingBuff.h **** 		 *        the returned number should be used only to determine how many successive reads may safe
+ 103:Lib/LightweightRingBuff.h **** 		 *        be performed on the buffer.
+ 104:Lib/LightweightRingBuff.h **** 		 *
+ 105:Lib/LightweightRingBuff.h **** 		 *  \param[in] Buffer  Pointer to a ring buffer structure whose count is to be computed
+ 106:Lib/LightweightRingBuff.h **** 		 */
+ 107:Lib/LightweightRingBuff.h **** 		static inline RingBuff_Count_t RingBuffer_GetCount(RingBuff_t* const Buffer)
+ 108:Lib/LightweightRingBuff.h **** 		{
+ 109:Lib/LightweightRingBuff.h **** 			RingBuff_Count_t Count;
+ 110:Lib/LightweightRingBuff.h **** 			
+ 111:Lib/LightweightRingBuff.h **** 			ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+ 112:Lib/LightweightRingBuff.h **** 			{
+ 113:Lib/LightweightRingBuff.h **** 				Count = Buffer->Count;
+ 114:Lib/LightweightRingBuff.h **** 			}
+ 115:Lib/LightweightRingBuff.h **** 			
+ 116:Lib/LightweightRingBuff.h **** 			return Count;
+ 117:Lib/LightweightRingBuff.h **** 		}
+ 118:Lib/LightweightRingBuff.h **** 		
+ 119:Lib/LightweightRingBuff.h **** 		/** Atomically determines if the specified ring buffer contains any free space. This should
+ 120:Lib/LightweightRingBuff.h **** 		 *  be tested before storing data to the buffer, to ensure that no data is lost due to a
+ 121:Lib/LightweightRingBuff.h **** 		 *  buffer overrun.
+ 122:Lib/LightweightRingBuff.h **** 		 *
+ 123:Lib/LightweightRingBuff.h **** 		 *  \param[in,out] Buffer  Pointer to a ring buffer structure to insert into
+ 124:Lib/LightweightRingBuff.h **** 		 *
+ 125:Lib/LightweightRingBuff.h **** 		 *  \return Boolean true if the buffer contains no free space, false otherwise
+ 126:Lib/LightweightRingBuff.h **** 		 */		 
+ 127:Lib/LightweightRingBuff.h **** 		static inline bool RingBuffer_IsFull(RingBuff_t* const Buffer)
+ 128:Lib/LightweightRingBuff.h **** 		{
+ 129:Lib/LightweightRingBuff.h **** 			return (RingBuffer_GetCount(Buffer) == BUFFER_SIZE);
+ 130:Lib/LightweightRingBuff.h **** 		}
+ 131:Lib/LightweightRingBuff.h **** 
+ 132:Lib/LightweightRingBuff.h **** 		/** Atomically determines if the specified ring buffer contains any data. This should
+ 133:Lib/LightweightRingBuff.h **** 		 *  be tested before removing data from the buffer, to ensure that the buffer does not
+ 134:Lib/LightweightRingBuff.h **** 		 *  underflow.
+ 135:Lib/LightweightRingBuff.h **** 		 *
+ 136:Lib/LightweightRingBuff.h **** 		 *  If the data is to be removed in a loop, store the total number of bytes stored in the
+ 137:Lib/LightweightRingBuff.h **** 		 *  buffer (via a call to the \ref RingBuffer_GetCount() function) in a temporary variable
+ 138:Lib/LightweightRingBuff.h **** 		 *  to reduce the time spent in atomicity locks.
+ 139:Lib/LightweightRingBuff.h **** 		 *
+ 140:Lib/LightweightRingBuff.h **** 		 *  \param[in,out] Buffer  Pointer to a ring buffer structure to insert into
+ 141:Lib/LightweightRingBuff.h **** 		 *
+ 142:Lib/LightweightRingBuff.h **** 		 *  \return Boolean true if the buffer contains no free space, false otherwise
+ 143:Lib/LightweightRingBuff.h **** 		 */		 
+ 144:Lib/LightweightRingBuff.h **** 		static inline bool RingBuffer_IsEmpty(RingBuff_t* const Buffer)
+ 145:Lib/LightweightRingBuff.h **** 		{
+ 146:Lib/LightweightRingBuff.h **** 			return (RingBuffer_GetCount(Buffer) == 0);
+ 147:Lib/LightweightRingBuff.h **** 		}
+ 148:Lib/LightweightRingBuff.h **** 
+ 149:Lib/LightweightRingBuff.h **** 		/** Inserts an element into the ring buffer.
+ 150:Lib/LightweightRingBuff.h **** 		 *
+ 151:Lib/LightweightRingBuff.h **** 		 *  \note Only one execution thread (main program thread or an ISR) may insert into a single buff
+ 152:Lib/LightweightRingBuff.h **** 		 *        otherwise data corruption may occur. Insertion and removal may occur from different exe
+ 153:Lib/LightweightRingBuff.h **** 		 *        threads.
+ 154:Lib/LightweightRingBuff.h **** 		 *
+ 155:Lib/LightweightRingBuff.h **** 		 *  \param[in,out] Buffer  Pointer to a ring buffer structure to insert into
+ 156:Lib/LightweightRingBuff.h **** 		 *  \param[in]     Data    Data element to insert into the buffer
+ 157:Lib/LightweightRingBuff.h **** 		 */
+ 158:Lib/LightweightRingBuff.h **** 		static inline void RingBuffer_Insert(RingBuff_t* const Buffer,
+ 159:Lib/LightweightRingBuff.h **** 		                                     const RingBuff_Data_t Data)
+ 160:Lib/LightweightRingBuff.h **** 		{
+ 161:Lib/LightweightRingBuff.h **** 			*Buffer->In = Data;
+ 162:Lib/LightweightRingBuff.h **** 			
+ 163:Lib/LightweightRingBuff.h **** 			if (++Buffer->In == &Buffer->Buffer[BUFFER_SIZE])
+ 164:Lib/LightweightRingBuff.h **** 			  Buffer->In = Buffer->Buffer;
+ 165:Lib/LightweightRingBuff.h **** 
+ 166:Lib/LightweightRingBuff.h **** 			ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+ 167:Lib/LightweightRingBuff.h **** 			{
+ 168:Lib/LightweightRingBuff.h **** 				Buffer->Count++;
+ 169:Lib/LightweightRingBuff.h **** 			}
+ 170:Lib/LightweightRingBuff.h **** 		}
+ 171:Lib/LightweightRingBuff.h **** 
+ 172:Lib/LightweightRingBuff.h **** 		/** Removes an element from the ring buffer.
+ 173:Lib/LightweightRingBuff.h **** 		 *
+ 174:Lib/LightweightRingBuff.h **** 		 *  \note Only one execution thread (main program thread or an ISR) may remove from a single buff
+ 175:Lib/LightweightRingBuff.h **** 		 *        otherwise data corruption may occur. Insertion and removal may occur from different exe
+ 176:Lib/LightweightRingBuff.h **** 		 *        threads.
+ 177:Lib/LightweightRingBuff.h **** 		 *
+ 178:Lib/LightweightRingBuff.h **** 		 *  \param[in,out] Buffer  Pointer to a ring buffer structure to retrieve from
+ 179:Lib/LightweightRingBuff.h **** 		 *
+ 180:Lib/LightweightRingBuff.h **** 		 *  \return Next data element stored in the buffer
+ 181:Lib/LightweightRingBuff.h **** 		 */
+ 182:Lib/LightweightRingBuff.h **** 		static inline RingBuff_Data_t RingBuffer_Remove(RingBuff_t* const Buffer)
+ 183:Lib/LightweightRingBuff.h **** 		{
+ 184:Lib/LightweightRingBuff.h **** 			RingBuff_Data_t Data = *Buffer->Out;
+ 175               		.loc 4 184 0
+ 176 0032 7C01      		movw r14,r24
+ 177               	.LBE92:
+ 178               	.LBE91:
+ 116:Arduino-mouse.c **** 
+ 179               		.loc 1 116 0
+ 180 0034 DD24      		clr r13
+ 181 0036 D394      		inc r13
+ 182               	.LVL8:
+ 183               	.L6:
+ 184               	.LBB99:
+ 185               	.LBB100:
+ 186               	.LBB101:
  111:Lib/LightweightRingBuff.h **** 			{
- 221               		.loc 1 111 0
- 222 0020 9FB7      		in r25,__SREG__
- 223               	.LVL15:
- 224               	.LBB92:
- 225               	.LBB93:
+ 187               		.loc 4 111 0
+ 188 0038 9FB7      		in r25,__SREG__
+ 189               	.LVL9:
+ 190               	.LBB102:
+ 191               	.LBB103:
   50:/usr/lib/avr/include/util/atomic.h ****     return 1;
- 226               		.loc 2 50 0
- 227               	/* #APP */
- 228               	 ;  50 "/usr/lib/avr/include/util/atomic.h" 1
- 229 0022 F894      		cli
- 230               	 ;  0 "" 2
- 231               	.LVL16:
- 232               	/* #NOAPP */
- 233               	.LBE93:
- 234               	.LBE92:
+ 192               		.loc 5 50 0
+ 193               	/* #APP */
+ 194               	 ;  50 "/usr/lib/avr/include/util/atomic.h" 1
+ 195 003a F894      		cli
+ 196               	 ;  0 "" 2
+ 197               	.LVL10:
+ 198               	/* #NOAPP */
+ 199               	.LBE103:
+ 200               	.LBE102:
  113:Lib/LightweightRingBuff.h **** 			}
- 235               		.loc 1 113 0
- 236 0024 8091 0000 		lds r24,USARTtoUSB_Buffer+132
- 237               	.LVL17:
- 238               	.LBB94:
- 239               	.LBB95:
+ 201               		.loc 4 113 0
+ 202 003c 8091 0000 		lds r24,USARTtoUSB_Buffer+132
+ 203               	.LVL11:
+ 204               	.LBB104:
+ 205               	.LBB105:
   70:/usr/lib/avr/include/util/atomic.h ****     __asm__ volatile ("" ::: "memory");
- 240               		.loc 2 70 0
- 241 0028 9FBF      		out __SREG__,r25
- 242               		.loc 2 71 0
- 243               	.LVL18:
- 244               	.LBE95:
- 245               	.LBE94:
- 246               	.LBE91:
- 247               	.LBE90:
- 248               	.LBE89:
- 110:Arduino-mouse.c **** 		for (ind=0; ind<3; ind++) {
- 249               		.loc 3 110 0
- 250 002a 8430      		cpi r24,lo8(4)
- 251 002c 00F0      		brlo .L6
- 252               	.LVL19:
- 112:Arduino-mouse.c **** 		}
- 253               		.loc 3 112 0 discriminator 1
- 254 002e 0E94 0000 		call RingBuffer_Remove.constprop.3
- 255               	.LVL20:
- 256 0032 182F      		mov r17,r24
- 257               	.LVL21:
- 258 0034 0E94 0000 		call RingBuffer_Remove.constprop.3
- 259               	.LVL22:
- 260 0038 D82F      		mov r29,r24
- 261               	.LVL23:
- 262 003a 0E94 0000 		call RingBuffer_Remove.constprop.3
- 263               	.LVL24:
- 264 003e C82F      		mov r28,r24
- 265               	.LVL25:
- 115:Arduino-mouse.c **** 
- 266               		.loc 3 115 0 discriminator 1
- 267 0040 0E94 0000 		call RingBuffer_Remove.constprop.3
- 268               	.LVL26:
- 117:Arduino-mouse.c **** 		mouseReport.X = newReport.X;
- 269               		.loc 3 117 0 discriminator 1
- 270 0044 1093 0000 		sts mouseReport,r17
- 118:Arduino-mouse.c **** 		mouseReport.Y = newReport.Y;
- 271               		.loc 3 118 0 discriminator 1
- 272 0048 D093 0000 		sts mouseReport+1,r29
- 119:Arduino-mouse.c **** 	    }
- 273               		.loc 3 119 0 discriminator 1
- 274 004c C093 0000 		sts mouseReport+2,r28
- 275               	.LVL27:
- 276               	.L6:
- 122:Arduino-mouse.c **** 	    USB_USBTask();
- 277               		.loc 3 122 0
- 278 0050 80E0      		ldi r24,lo8(Mouse_HID_Interface)
- 279 0052 90E0      		ldi r25,hi8(Mouse_HID_Interface)
- 280 0054 0E94 0000 		call HID_Device_USBTask
- 281               	.LVL28:
- 123:Arduino-mouse.c **** 	}
- 282               		.loc 3 123 0
- 283 0058 0E94 0000 		call USB_USBTask
- 284               	.LVL29:
- 285               	.LBE88:
- 124:Arduino-mouse.c **** }
- 286               		.loc 3 124 0
- 287 005c 00C0      		rjmp .L7
- 288               		.cfi_endproc
- 289               	.LFE90:
- 291               		.section	.text.EVENT_USB_Device_Connect,"ax",@progbits
- 292               	.global	EVENT_USB_Device_Connect
- 294               	EVENT_USB_Device_Connect:
- 295               	.LFB103:
- 296               		.cfi_startproc
- 297               	/* prologue: function */
- 298               	/* frame size = 0 */
- 299               	/* stack size = 0 */
- 300               	.L__stack_usage = 0
- 301 0000 0895      		ret
- 302               		.cfi_endproc
- 303               	.LFE103:
- 305               		.section	.text.EVENT_USB_Device_Disconnect,"ax",@progbits
- 306               	.global	EVENT_USB_Device_Disconnect
- 308               	EVENT_USB_Device_Disconnect:
- 309               	.LFB93:
- 143:Arduino-mouse.c **** 
- 144:Arduino-mouse.c **** /** Event handler for the library USB Connection event. */
- 145:Arduino-mouse.c **** void EVENT_USB_Device_Connect(void)
- 146:Arduino-mouse.c **** {
- 147:Arduino-mouse.c **** 	//LEDs_SetAllLEDs(LEDMASK_USB_ENUMERATING);
- 148:Arduino-mouse.c **** }
- 149:Arduino-mouse.c **** 
- 150:Arduino-mouse.c **** /** Event handler for the library USB Disconnection event. */
- 151:Arduino-mouse.c **** void EVENT_USB_Device_Disconnect(void)
- 152:Arduino-mouse.c **** {
- 310               		.loc 3 152 0
- 311               		.cfi_startproc
- 312               	/* prologue: function */
- 313               	/* frame size = 0 */
- 314               	/* stack size = 0 */
- 315               	.L__stack_usage = 0
- 316 0000 0895      		ret
- 317               		.cfi_endproc
- 318               	.LFE93:
- 320               		.section	.text.EVENT_USB_Device_ConfigurationChanged,"ax",@progbits
- 321               	.global	EVENT_USB_Device_ConfigurationChanged
- 323               	EVENT_USB_Device_ConfigurationChanged:
- 324               	.LFB94:
- 153:Arduino-mouse.c **** }
- 154:Arduino-mouse.c **** 
- 155:Arduino-mouse.c **** /** Event handler for the library USB Configuration Changed event. */
- 156:Arduino-mouse.c **** void EVENT_USB_Device_ConfigurationChanged(void)
- 157:Arduino-mouse.c **** {
- 325               		.loc 3 157 0
- 326               		.cfi_startproc
- 327               	/* prologue: function */
- 328               	/* frame size = 0 */
- 329               	/* stack size = 0 */
- 330               	.L__stack_usage = 0
- 158:Arduino-mouse.c **** 	HID_Device_ConfigureEndpoints(&Mouse_HID_Interface);
- 331               		.loc 3 158 0
- 332 0000 80E0      		ldi r24,lo8(Mouse_HID_Interface)
- 333 0002 90E0      		ldi r25,hi8(Mouse_HID_Interface)
- 334 0004 0E94 0000 		call HID_Device_ConfigureEndpoints
- 335               	.LVL30:
- 336               	.LBB96:
- 337               	.LBB97:
- 338               		.file 6 "../../LUFA/Drivers/USB/HighLevel/../LowLevel/Device.h"
+ 206               		.loc 5 70 0
+ 207 0040 9FBF      		out __SREG__,r25
+ 208               		.loc 5 71 0
+ 209               	.LVL12:
+ 210               	.LBE105:
+ 211               	.LBE104:
+ 212               	.LBE101:
+ 213               	.LBE100:
+ 214               	.LBE99:
+ 111:Arduino-mouse.c **** 			for (ind=0; ind<4; ind++) {
+ 215               		.loc 1 111 0
+ 216 0042 8430      		cpi r24,lo8(4)
+ 217 0044 00F0      		brlo .L3
+ 218 0046 DE01      		movw r26,r28
+ 219 0048 1196      		adiw r26,1
+ 220               	.LVL13:
+ 221               	.L5:
+ 222               	.LBB106:
+ 223               	.LBB98:
+ 224               		.loc 4 184 0 discriminator 3
+ 225 004a E091 0000 		lds r30,USARTtoUSB_Buffer+130
+ 226 004e F091 0000 		lds r31,USARTtoUSB_Buffer+130+1
+ 227 0052 9191      		ld r25,Z+
+ 228               	.LVL14:
+ 185:Lib/LightweightRingBuff.h **** 			
+ 186:Lib/LightweightRingBuff.h **** 			if (++Buffer->Out == &Buffer->Buffer[BUFFER_SIZE])
+ 229               		.loc 4 186 0 discriminator 3
+ 230 0054 F093 0000 		sts USARTtoUSB_Buffer+130+1,r31
+ 231 0058 E093 0000 		sts USARTtoUSB_Buffer+130,r30
+ 232 005c E050      		subi r30,lo8(USARTtoUSB_Buffer+128)
+ 233 005e F040      		sbci r31,hi8(USARTtoUSB_Buffer+128)
+ 234 0060 01F4      		brne .L4
+ 187:Lib/LightweightRingBuff.h **** 			  Buffer->Out = Buffer->Buffer;
+ 235               		.loc 4 187 0
+ 236 0062 F092 0000 		sts USARTtoUSB_Buffer+130+1,r15
+ 237 0066 E092 0000 		sts USARTtoUSB_Buffer+130,r14
+ 238               	.L4:
+ 239               	.LBB93:
+ 188:Lib/LightweightRingBuff.h **** 
+ 189:Lib/LightweightRingBuff.h **** 			ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+ 240               		.loc 4 189 0
+ 241 006a 2FB7      		in r18,__SREG__
+ 242               	.LVL15:
+ 243               	.LBB94:
+ 244               	.LBB95:
+  50:/usr/lib/avr/include/util/atomic.h ****     return 1;
+ 245               		.loc 5 50 0
+ 246               	/* #APP */
+ 247               	 ;  50 "/usr/lib/avr/include/util/atomic.h" 1
+ 248 006c F894      		cli
+ 249               	 ;  0 "" 2
+ 250               	.LVL16:
+ 251               	/* #NOAPP */
+ 252               	.LBE95:
+ 253               	.LBE94:
+ 190:Lib/LightweightRingBuff.h **** 			{
+ 191:Lib/LightweightRingBuff.h **** 				Buffer->Count--;
+ 254               		.loc 4 191 0
+ 255 006e 8091 0000 		lds r24,USARTtoUSB_Buffer+132
+ 256 0072 8150      		subi r24,lo8(-(-1))
+ 257 0074 8093 0000 		sts USARTtoUSB_Buffer+132,r24
+ 258               	.LVL17:
+ 259               	.LBB96:
+ 260               	.LBB97:
+  70:/usr/lib/avr/include/util/atomic.h ****     __asm__ volatile ("" ::: "memory");
+ 261               		.loc 5 70 0
+ 262 0078 2FBF      		out __SREG__,r18
+ 263               		.loc 5 71 0
+ 264               	.LVL18:
+ 265               	.LBE97:
+ 266               	.LBE96:
+ 267               	.LBE93:
+ 268               	.LBE98:
+ 269               	.LBE106:
+ 113:Arduino-mouse.c **** 			}
+ 270               		.loc 1 113 0
+ 271 007a 9D93      		st X+,r25
+ 272               	.LVL19:
+ 112:Arduino-mouse.c **** 				((uint8_t *)&newReport)[ind] = RingBuffer_Remove(&USARTtoUSB_Buffer);
+ 273               		.loc 1 112 0
+ 274 007c A017      		cp r26,r16
+ 275 007e B107      		cpc r27,r17
+ 276 0080 01F4      		brne .L5
+ 116:Arduino-mouse.c **** 
+ 277               		.loc 1 116 0
+ 278 0082 D092 0000 		sts isNewReport,r13
+ 118:Arduino-mouse.c **** 			mouseReport.X = newReport.X;
+ 279               		.loc 1 118 0
+ 280 0086 8981      		ldd r24,Y+1
+ 281 0088 8093 0000 		sts mouseReport,r24
+ 119:Arduino-mouse.c **** 			mouseReport.Y = newReport.Y;
+ 282               		.loc 1 119 0
+ 283 008c 8A81      		ldd r24,Y+2
+ 284 008e 8093 0000 		sts mouseReport+1,r24
+ 120:Arduino-mouse.c **** 			mouseReport.Wheel = newReport.Wheel;
+ 285               		.loc 1 120 0
+ 286 0092 8B81      		ldd r24,Y+3
+ 287 0094 8093 0000 		sts mouseReport+2,r24
+ 121:Arduino-mouse.c **** 	    }
+ 288               		.loc 1 121 0
+ 289 0098 8C81      		ldd r24,Y+4
+ 290 009a 8093 0000 		sts mouseReport+3,r24
+ 291               	.LVL20:
+ 292               	.L3:
+ 124:Arduino-mouse.c **** 	    USB_USBTask();
+ 293               		.loc 1 124 0
+ 294 009e 80E0      		ldi r24,lo8(Mouse_HID_Interface)
+ 295 00a0 90E0      		ldi r25,hi8(Mouse_HID_Interface)
+ 296 00a2 0E94 0000 		call HID_Device_USBTask
+ 297               	.LVL21:
+ 125:Arduino-mouse.c **** 	}
+ 298               		.loc 1 125 0
+ 299 00a6 0E94 0000 		call USB_USBTask
+ 300               	.LVL22:
+ 301               	.LBE90:
+ 126:Arduino-mouse.c **** }
+ 302               		.loc 1 126 0
+ 303 00aa 00C0      		rjmp .L6
+ 304               		.cfi_endproc
+ 305               	.LFE90:
+ 307               		.section	.text.EVENT_USB_Device_Connect,"ax",@progbits
+ 308               	.global	EVENT_USB_Device_Connect
+ 310               	EVENT_USB_Device_Connect:
+ 311               	.LFB103:
+ 312               		.cfi_startproc
+ 313               	/* prologue: function */
+ 314               	/* frame size = 0 */
+ 315               	/* stack size = 0 */
+ 316               	.L__stack_usage = 0
+ 317 0000 0895      		ret
+ 318               		.cfi_endproc
+ 319               	.LFE103:
+ 321               		.section	.text.EVENT_USB_Device_Disconnect,"ax",@progbits
+ 322               	.global	EVENT_USB_Device_Disconnect
+ 324               	EVENT_USB_Device_Disconnect:
+ 325               	.LFB93:
+ 145:Arduino-mouse.c **** 
+ 146:Arduino-mouse.c **** /** Event handler for the library USB Connection event. */
+ 147:Arduino-mouse.c **** void EVENT_USB_Device_Connect(void)
+ 148:Arduino-mouse.c **** {
+ 149:Arduino-mouse.c **** 	//LEDs_SetAllLEDs(LEDMASK_USB_ENUMERATING);
+ 150:Arduino-mouse.c **** }
+ 151:Arduino-mouse.c **** 
+ 152:Arduino-mouse.c **** /** Event handler for the library USB Disconnection event. */
+ 153:Arduino-mouse.c **** void EVENT_USB_Device_Disconnect(void)
+ 154:Arduino-mouse.c **** {
+ 326               		.loc 1 154 0
+ 327               		.cfi_startproc
+ 328               	/* prologue: function */
+ 329               	/* frame size = 0 */
+ 330               	/* stack size = 0 */
+ 331               	.L__stack_usage = 0
+ 332 0000 0895      		ret
+ 333               		.cfi_endproc
+ 334               	.LFE93:
+ 336               		.section	.text.EVENT_USB_Device_ConfigurationChanged,"ax",@progbits
+ 337               	.global	EVENT_USB_Device_ConfigurationChanged
+ 339               	EVENT_USB_Device_ConfigurationChanged:
+ 340               	.LFB94:
+ 155:Arduino-mouse.c **** }
+ 156:Arduino-mouse.c **** 
+ 157:Arduino-mouse.c **** /** Event handler for the library USB Configuration Changed event. */
+ 158:Arduino-mouse.c **** void EVENT_USB_Device_ConfigurationChanged(void)
+ 159:Arduino-mouse.c **** {
+ 341               		.loc 1 159 0
+ 342               		.cfi_startproc
+ 343               	/* prologue: function */
+ 344               	/* frame size = 0 */
+ 345               	/* stack size = 0 */
+ 346               	.L__stack_usage = 0
+ 160:Arduino-mouse.c **** 	HID_Device_ConfigureEndpoints(&Mouse_HID_Interface);
+ 347               		.loc 1 160 0
+ 348 0000 80E0      		ldi r24,lo8(Mouse_HID_Interface)
+ 349 0002 90E0      		ldi r25,hi8(Mouse_HID_Interface)
+ 350 0004 0E94 0000 		call HID_Device_ConfigureEndpoints
+ 351               	.LVL23:
+ 352               	.LBB107:
+ 353               	.LBB108:
+ 354               		.file 6 "../../LUFA/Drivers/USB/HighLevel/../LowLevel/Device.h"
    1:../../LUFA/Drivers/USB/HighLevel/../LowLevel/Device.h **** /*
    2:../../LUFA/Drivers/USB/HighLevel/../LowLevel/Device.h ****              LUFA Library
    3:../../LUFA/Drivers/USB/HighLevel/../LowLevel/Device.h ****      Copyright (C) Dean Camera, 2010.
@@ -1544,61 +1560,61 @@
  148:../../LUFA/Drivers/USB/HighLevel/../LowLevel/Device.h **** 			static inline void USB_Device_EnableSOFEvents(void)
  149:../../LUFA/Drivers/USB/HighLevel/../LowLevel/Device.h **** 			{
  150:../../LUFA/Drivers/USB/HighLevel/../LowLevel/Device.h **** 				USB_INT_Enable(USB_INT_SOFI);
- 339               		.loc 6 150 0
- 340 0008 E2EE      		ldi r30,lo8(-30)
- 341 000a F0E0      		ldi r31,0
- 342 000c 8081      		ld r24,Z
- 343 000e 8460      		ori r24,lo8(4)
- 344 0010 8083      		st Z,r24
- 345 0012 0895      		ret
- 346               	.LBE97:
- 347               	.LBE96:
- 348               		.cfi_endproc
- 349               	.LFE94:
- 351               		.section	.text.EVENT_USB_Device_UnhandledControlRequest,"ax",@progbits
- 352               	.global	EVENT_USB_Device_UnhandledControlRequest
- 354               	EVENT_USB_Device_UnhandledControlRequest:
- 355               	.LFB95:
- 159:Arduino-mouse.c **** 
- 160:Arduino-mouse.c **** 	USB_Device_EnableSOFEvents();
- 161:Arduino-mouse.c **** }
- 162:Arduino-mouse.c **** 
- 163:Arduino-mouse.c **** /** Event handler for the library USB Unhandled Control Request event. */
- 164:Arduino-mouse.c **** void EVENT_USB_Device_UnhandledControlRequest(void)
- 165:Arduino-mouse.c **** {
- 356               		.loc 3 165 0
- 357               		.cfi_startproc
- 358               	/* prologue: function */
- 359               	/* frame size = 0 */
- 360               	/* stack size = 0 */
- 361               	.L__stack_usage = 0
- 166:Arduino-mouse.c **** 	HID_Device_ProcessControlRequest(&Mouse_HID_Interface);
- 362               		.loc 3 166 0
- 363 0000 80E0      		ldi r24,lo8(Mouse_HID_Interface)
- 364 0002 90E0      		ldi r25,hi8(Mouse_HID_Interface)
- 365 0004 0C94 0000 		jmp HID_Device_ProcessControlRequest
- 366               	.LVL31:
- 367               		.cfi_endproc
- 368               	.LFE95:
- 370               		.section	.text.EVENT_USB_Device_StartOfFrame,"ax",@progbits
- 371               	.global	EVENT_USB_Device_StartOfFrame
- 373               	EVENT_USB_Device_StartOfFrame:
- 374               	.LFB96:
- 167:Arduino-mouse.c **** }
- 168:Arduino-mouse.c **** 
- 169:Arduino-mouse.c **** /** Event handler for the USB device Start Of Frame event. */
- 170:Arduino-mouse.c **** void EVENT_USB_Device_StartOfFrame(void)
- 171:Arduino-mouse.c **** {
- 375               		.loc 3 171 0
- 376               		.cfi_startproc
- 377               	/* prologue: function */
- 378               	/* frame size = 0 */
- 379               	/* stack size = 0 */
- 380               	.L__stack_usage = 0
- 381               	.LVL32:
- 382               	.LBB98:
- 383               	.LBB99:
- 384               		.file 7 "../../LUFA/Drivers/USB/Class/Device/HID.h"
+ 355               		.loc 6 150 0
+ 356 0008 E2EE      		ldi r30,lo8(-30)
+ 357 000a F0E0      		ldi r31,0
+ 358 000c 8081      		ld r24,Z
+ 359 000e 8460      		ori r24,lo8(4)
+ 360 0010 8083      		st Z,r24
+ 361 0012 0895      		ret
+ 362               	.LBE108:
+ 363               	.LBE107:
+ 364               		.cfi_endproc
+ 365               	.LFE94:
+ 367               		.section	.text.EVENT_USB_Device_UnhandledControlRequest,"ax",@progbits
+ 368               	.global	EVENT_USB_Device_UnhandledControlRequest
+ 370               	EVENT_USB_Device_UnhandledControlRequest:
+ 371               	.LFB95:
+ 161:Arduino-mouse.c **** 
+ 162:Arduino-mouse.c **** 	USB_Device_EnableSOFEvents();
+ 163:Arduino-mouse.c **** }
+ 164:Arduino-mouse.c **** 
+ 165:Arduino-mouse.c **** /** Event handler for the library USB Unhandled Control Request event. */
+ 166:Arduino-mouse.c **** void EVENT_USB_Device_UnhandledControlRequest(void)
+ 167:Arduino-mouse.c **** {
+ 372               		.loc 1 167 0
+ 373               		.cfi_startproc
+ 374               	/* prologue: function */
+ 375               	/* frame size = 0 */
+ 376               	/* stack size = 0 */
+ 377               	.L__stack_usage = 0
+ 168:Arduino-mouse.c **** 	HID_Device_ProcessControlRequest(&Mouse_HID_Interface);
+ 378               		.loc 1 168 0
+ 379 0000 80E0      		ldi r24,lo8(Mouse_HID_Interface)
+ 380 0002 90E0      		ldi r25,hi8(Mouse_HID_Interface)
+ 381 0004 0C94 0000 		jmp HID_Device_ProcessControlRequest
+ 382               	.LVL24:
+ 383               		.cfi_endproc
+ 384               	.LFE95:
+ 386               		.section	.text.EVENT_USB_Device_StartOfFrame,"ax",@progbits
+ 387               	.global	EVENT_USB_Device_StartOfFrame
+ 389               	EVENT_USB_Device_StartOfFrame:
+ 390               	.LFB96:
+ 169:Arduino-mouse.c **** }
+ 170:Arduino-mouse.c **** 
+ 171:Arduino-mouse.c **** /** Event handler for the USB device Start Of Frame event. */
+ 172:Arduino-mouse.c **** void EVENT_USB_Device_StartOfFrame(void)
+ 173:Arduino-mouse.c **** {
+ 391               		.loc 1 173 0
+ 392               		.cfi_startproc
+ 393               	/* prologue: function */
+ 394               	/* frame size = 0 */
+ 395               	/* stack size = 0 */
+ 396               	.L__stack_usage = 0
+ 397               	.LVL25:
+ 398               	.LBB109:
+ 399               	.LBB110:
+ 400               		.file 7 "../../LUFA/Drivers/USB/Class/Device/HID.h"
    1:../../LUFA/Drivers/USB/Class/Device/HID.h **** /*
    2:../../LUFA/Drivers/USB/Class/Device/HID.h ****              LUFA Library
    3:../../LUFA/Drivers/USB/Class/Device/HID.h ****      Copyright (C) Dean Camera, 2010.
@@ -1800,304 +1816,321 @@
  199:../../LUFA/Drivers/USB/Class/Device/HID.h **** 			static inline void HID_Device_MillisecondElapsed(USB_ClassInfo_HID_Device_t* const HIDInterfaceI
  200:../../LUFA/Drivers/USB/Class/Device/HID.h **** 			{
  201:../../LUFA/Drivers/USB/Class/Device/HID.h **** 				if (HIDInterfaceInfo->State.IdleMSRemaining)
- 385               		.loc 7 201 0
- 386 0000 8091 0000 		lds r24,Mouse_HID_Interface+11
- 387 0004 9091 0000 		lds r25,Mouse_HID_Interface+11+1
- 388 0008 0097      		sbiw r24,0
- 389 000a 01F0      		breq .L12
+ 401               		.loc 7 201 0
+ 402 0000 8091 0000 		lds r24,Mouse_HID_Interface+11
+ 403 0004 9091 0000 		lds r25,Mouse_HID_Interface+11+1
+ 404 0008 0097      		sbiw r24,0
+ 405 000a 01F0      		breq .L13
  202:../../LUFA/Drivers/USB/Class/Device/HID.h **** 				  HIDInterfaceInfo->State.IdleMSRemaining--;
- 390               		.loc 7 202 0
- 391 000c 0197      		sbiw r24,1
- 392 000e 9093 0000 		sts Mouse_HID_Interface+11+1,r25
- 393 0012 8093 0000 		sts Mouse_HID_Interface+11,r24
- 394               	.LVL33:
- 395               	.L12:
- 396 0016 0895      		ret
- 397               	.LBE99:
- 398               	.LBE98:
- 399               		.cfi_endproc
- 400               	.LFE96:
- 402               		.section	.text.CALLBACK_HID_Device_CreateHIDReport,"ax",@progbits
- 403               	.global	CALLBACK_HID_Device_CreateHIDReport
- 405               	CALLBACK_HID_Device_CreateHIDReport:
- 406               	.LFB97:
- 172:Arduino-mouse.c **** 	HID_Device_MillisecondElapsed(&Mouse_HID_Interface);
- 173:Arduino-mouse.c **** }
- 174:Arduino-mouse.c **** 
- 175:Arduino-mouse.c **** /** HID class driver callback function for the creation of HID reports to the host.
- 176:Arduino-mouse.c ****  *
- 177:Arduino-mouse.c ****  *  \param[in]     HIDInterfaceInfo  Pointer to the HID class interface configuration structure bei
- 178:Arduino-mouse.c ****  *  \param[in,out] ReportID    Report ID requested by the host if non-zero, otherwise callback shou
- 179:Arduino-mouse.c ****  *  \param[in]     ReportType  Type of the report to create, either REPORT_ITEM_TYPE_In or REPORT_I
- 180:Arduino-mouse.c ****  *  \param[out]    ReportData  Pointer to a buffer where the created report should be stored
- 181:Arduino-mouse.c ****  *  \param[out]    ReportSize  Number of bytes written in the report (or zero if no report is to be
- 182:Arduino-mouse.c ****  *
- 183:Arduino-mouse.c ****  *  \return Boolean true to force the sending of the report, false to let the library determine if 
- 184:Arduino-mouse.c ****  */
- 185:Arduino-mouse.c **** bool CALLBACK_HID_Device_CreateHIDReport(
- 186:Arduino-mouse.c ****     USB_ClassInfo_HID_Device_t* const HIDInterfaceInfo,
- 187:Arduino-mouse.c ****     uint8_t* const ReportID,
- 188:Arduino-mouse.c ****     const uint8_t ReportType,
- 189:Arduino-mouse.c ****     void* ReportData,
- 190:Arduino-mouse.c ****     uint16_t* const ReportSize)
- 191:Arduino-mouse.c **** {
- 407               		.loc 3 191 0
- 408               		.cfi_startproc
- 409               	.LVL34:
- 410 0000 0F93      		push r16
- 411               	.LCFI2:
- 412               		.cfi_def_cfa_offset 3
- 413               		.cfi_offset 16, -2
- 414 0002 1F93      		push r17
- 415               	.LCFI3:
- 416               		.cfi_def_cfa_offset 4
- 417               		.cfi_offset 17, -3
- 418               	/* prologue: function */
- 419               	/* frame size = 0 */
- 420               	/* stack size = 2 */
- 421               	.L__stack_usage = 2
- 422               	.LVL35:
- 192:Arduino-mouse.c **** 	USB_MouseReport_Data_t* reportp = (USB_MouseReport_Data_t*)ReportData;
- 193:Arduino-mouse.c **** 
- 194:Arduino-mouse.c **** 	*reportp = mouseReport;
- 423               		.loc 3 194 0
- 424 0004 8091 0000 		lds r24,mouseReport
- 425 0008 9091 0000 		lds r25,mouseReport+1
- 426 000c A091 0000 		lds r26,mouseReport+2
- 427               	.LVL36:
- 428 0010 F901      		movw r30,r18
- 429 0012 8083      		st Z,r24
- 430 0014 9183      		std Z+1,r25
- 431 0016 A283      		std Z+2,r26
+ 406               		.loc 7 202 0
+ 407 000c 0197      		sbiw r24,1
+ 408 000e 9093 0000 		sts Mouse_HID_Interface+11+1,r25
+ 409 0012 8093 0000 		sts Mouse_HID_Interface+11,r24
+ 410               	.LVL26:
+ 411               	.L13:
+ 412 0016 0895      		ret
+ 413               	.LBE110:
+ 414               	.LBE109:
+ 415               		.cfi_endproc
+ 416               	.LFE96:
+ 418               		.section	.text.CALLBACK_HID_Device_CreateHIDReport,"ax",@progbits
+ 419               	.global	CALLBACK_HID_Device_CreateHIDReport
+ 421               	CALLBACK_HID_Device_CreateHIDReport:
+ 422               	.LFB97:
+ 174:Arduino-mouse.c **** 	HID_Device_MillisecondElapsed(&Mouse_HID_Interface);
+ 175:Arduino-mouse.c **** }
+ 176:Arduino-mouse.c **** 
+ 177:Arduino-mouse.c **** /** HID class driver callback function for the creation of HID reports to the host.
+ 178:Arduino-mouse.c ****  *
+ 179:Arduino-mouse.c ****  *  \param[in]     HIDInterfaceInfo  Pointer to the HID class interface configuration structure bei
+ 180:Arduino-mouse.c ****  *  \param[in,out] ReportID    Report ID requested by the host if non-zero, otherwise callback shou
+ 181:Arduino-mouse.c ****  *  \param[in]     ReportType  Type of the report to create, either REPORT_ITEM_TYPE_In or REPORT_I
+ 182:Arduino-mouse.c ****  *  \param[out]    ReportData  Pointer to a buffer where the created report should be stored
+ 183:Arduino-mouse.c ****  *  \param[out]    ReportSize  Number of bytes written in the report (or zero if no report is to be
+ 184:Arduino-mouse.c ****  *
+ 185:Arduino-mouse.c ****  *  \return Boolean true to force the sending of the report, false to let the library determine if 
+ 186:Arduino-mouse.c ****  */
+ 187:Arduino-mouse.c **** bool CALLBACK_HID_Device_CreateHIDReport(
+ 188:Arduino-mouse.c ****     USB_ClassInfo_HID_Device_t* const HIDInterfaceInfo,
+ 189:Arduino-mouse.c ****     uint8_t* const ReportID,
+ 190:Arduino-mouse.c ****     const uint8_t ReportType,
+ 191:Arduino-mouse.c ****     void* ReportData,
+ 192:Arduino-mouse.c ****     uint16_t* const ReportSize)
+ 193:Arduino-mouse.c **** {
+ 423               		.loc 1 193 0
+ 424               		.cfi_startproc
+ 425               	.LVL27:
+ 426 0000 0F93      		push r16
+ 427               	.LCFI6:
+ 428               		.cfi_def_cfa_offset 3
+ 429               		.cfi_offset 16, -2
+ 430 0002 1F93      		push r17
+ 431               	.LCFI7:
+ 432               		.cfi_def_cfa_offset 4
+ 433               		.cfi_offset 17, -3
+ 434               	/* prologue: function */
+ 435               	/* frame size = 0 */
+ 436               	/* stack size = 2 */
+ 437               	.L__stack_usage = 2
+ 438               	.LVL28:
+ 194:Arduino-mouse.c **** 	USB_MouseReport_Data_t* reportp = (USB_MouseReport_Data_t*)ReportData;
  195:Arduino-mouse.c **** 
- 196:Arduino-mouse.c **** 	*ReportSize = sizeof(USB_MouseReport_Data_t);
- 432               		.loc 3 196 0
- 433 0018 83E0      		ldi r24,lo8(3)
- 434 001a 90E0      		ldi r25,0
- 435 001c F801      		movw r30,r16
- 436 001e 9183      		std Z+1,r25
- 437 0020 8083      		st Z,r24
- 197:Arduino-mouse.c **** 	return false;
- 198:Arduino-mouse.c **** }
- 438               		.loc 3 198 0
- 439 0022 80E0      		ldi r24,0
- 440               	/* epilogue start */
- 441 0024 1F91      		pop r17
- 442 0026 0F91      		pop r16
- 443               	.LVL37:
- 444 0028 0895      		ret
- 445               		.cfi_endproc
- 446               	.LFE97:
- 448               		.section	.text.CALLBACK_HID_Device_ProcessHIDReport,"ax",@progbits
- 449               	.global	CALLBACK_HID_Device_ProcessHIDReport
- 451               	CALLBACK_HID_Device_ProcessHIDReport:
- 452               	.LFB98:
- 199:Arduino-mouse.c **** 
- 200:Arduino-mouse.c **** /** HID class driver callback function for the processing of HID reports from the host.
- 201:Arduino-mouse.c ****  *
- 202:Arduino-mouse.c ****  *  \param[in] HIDInterfaceInfo  Pointer to the HID class interface configuration structure being r
- 203:Arduino-mouse.c ****  *  \param[in] ReportID    Report ID of the received report from the host
- 204:Arduino-mouse.c ****  *  \param[in] ReportType  The type of report that the host has sent, either REPORT_ITEM_TYPE_Out o
- 205:Arduino-mouse.c ****  *  \param[in] ReportData  Pointer to a buffer where the created report has been stored
- 206:Arduino-mouse.c ****  *  \param[in] ReportSize  Size in bytes of the received HID report
- 207:Arduino-mouse.c ****  */
- 208:Arduino-mouse.c **** void CALLBACK_HID_Device_ProcessHIDReport(USB_ClassInfo_HID_Device_t* const HIDInterfaceInfo,
- 209:Arduino-mouse.c ****                                           const uint8_t ReportID,
- 210:Arduino-mouse.c ****                                           const uint8_t ReportType,
- 211:Arduino-mouse.c ****                                           const void* ReportData,
- 212:Arduino-mouse.c ****                                           const uint16_t ReportSize)
- 213:Arduino-mouse.c **** {
- 453               		.loc 3 213 0
- 454               		.cfi_startproc
- 455               	.LVL38:
- 456               	/* prologue: function */
- 457               	/* frame size = 0 */
- 458               	/* stack size = 0 */
- 459               	.L__stack_usage = 0
- 460 0000 0895      		ret
- 461               		.cfi_endproc
- 462               	.LFE98:
- 464               		.section	.text.__vector_23,"ax",@progbits
- 465               	.global	__vector_23
- 467               	__vector_23:
- 468               	.LFB99:
- 214:Arduino-mouse.c ****     /* Not used but must be present */
- 215:Arduino-mouse.c **** }
- 216:Arduino-mouse.c **** 
- 217:Arduino-mouse.c **** /** ISR to manage the reception of data from the serial port, placing received bytes into a circula
- 218:Arduino-mouse.c ****  *  for later transmission to the host.
- 219:Arduino-mouse.c ****  */
- 220:Arduino-mouse.c **** ISR(USART1_RX_vect, ISR_BLOCK)
+ 196:Arduino-mouse.c **** 	*reportp = mouseReport;
+ 439               		.loc 1 196 0
+ 440 0004 8091 0000 		lds r24,mouseReport
+ 441 0008 9091 0000 		lds r25,mouseReport+1
+ 442 000c A091 0000 		lds r26,mouseReport+2
+ 443 0010 B091 0000 		lds r27,mouseReport+3
+ 444               	.LVL29:
+ 445 0014 F901      		movw r30,r18
+ 446 0016 8083      		st Z,r24
+ 447 0018 9183      		std Z+1,r25
+ 448 001a A283      		std Z+2,r26
+ 449 001c B383      		std Z+3,r27
+ 197:Arduino-mouse.c **** 
+ 198:Arduino-mouse.c **** 	*ReportSize = sizeof(USB_MouseReport_Data_t);
+ 450               		.loc 1 198 0
+ 451 001e 84E0      		ldi r24,lo8(4)
+ 452 0020 90E0      		ldi r25,0
+ 453 0022 F801      		movw r30,r16
+ 454 0024 9183      		std Z+1,r25
+ 455 0026 8083      		st Z,r24
+ 199:Arduino-mouse.c **** 	
+ 200:Arduino-mouse.c **** 	if (isNewReport) {
+ 456               		.loc 1 200 0
+ 457 0028 8091 0000 		lds r24,isNewReport
+ 458 002c 8111      		cpse r24,__zero_reg__
+ 201:Arduino-mouse.c **** 		isNewReport = false;
+ 459               		.loc 1 201 0
+ 460 002e 1092 0000 		sts isNewReport,__zero_reg__
+ 461               	.L19:
+ 462               	/* epilogue start */
+ 202:Arduino-mouse.c **** 		return true;
+ 203:Arduino-mouse.c **** 	}
+ 204:Arduino-mouse.c **** 
+ 205:Arduino-mouse.c **** 	return false;		
+ 206:Arduino-mouse.c **** }
+ 463               		.loc 1 206 0
+ 464 0032 1F91      		pop r17
+ 465 0034 0F91      		pop r16
+ 466               	.LVL30:
+ 467 0036 0895      		ret
+ 468               		.cfi_endproc
+ 469               	.LFE97:
+ 471               		.section	.text.CALLBACK_HID_Device_ProcessHIDReport,"ax",@progbits
+ 472               	.global	CALLBACK_HID_Device_ProcessHIDReport
+ 474               	CALLBACK_HID_Device_ProcessHIDReport:
+ 475               	.LFB98:
+ 207:Arduino-mouse.c **** 
+ 208:Arduino-mouse.c **** /** HID class driver callback function for the processing of HID reports from the host.
+ 209:Arduino-mouse.c ****  *
+ 210:Arduino-mouse.c ****  *  \param[in] HIDInterfaceInfo  Pointer to the HID class interface configuration structure being r
+ 211:Arduino-mouse.c ****  *  \param[in] ReportID    Report ID of the received report from the host
+ 212:Arduino-mouse.c ****  *  \param[in] ReportType  The type of report that the host has sent, either REPORT_ITEM_TYPE_Out o
+ 213:Arduino-mouse.c ****  *  \param[in] ReportData  Pointer to a buffer where the created report has been stored
+ 214:Arduino-mouse.c ****  *  \param[in] ReportSize  Size in bytes of the received HID report
+ 215:Arduino-mouse.c ****  */
+ 216:Arduino-mouse.c **** void CALLBACK_HID_Device_ProcessHIDReport(USB_ClassInfo_HID_Device_t* const HIDInterfaceInfo,
+ 217:Arduino-mouse.c ****                                           const uint8_t ReportID,
+ 218:Arduino-mouse.c ****                                           const uint8_t ReportType,
+ 219:Arduino-mouse.c ****                                           const void* ReportData,
+ 220:Arduino-mouse.c ****                                           const uint16_t ReportSize)
  221:Arduino-mouse.c **** {
- 469               		.loc 3 221 0
- 470               		.cfi_startproc
- 471               		.loc 3 221 0
- 472 0000 1F92      		push r1
- 473               	.LCFI4:
- 474               		.cfi_def_cfa_offset 3
- 475               		.cfi_offset 1, -2
- 476 0002 0F92      		push r0
- 477               	.LCFI5:
- 478               		.cfi_def_cfa_offset 4
- 479               		.cfi_offset 0, -3
- 480 0004 0FB6      		in r0,__SREG__
- 481 0006 0F92      		push r0
- 482 0008 1124      		clr __zero_reg__
- 483 000a 2F93      		push r18
- 484               	.LCFI6:
- 485               		.cfi_def_cfa_offset 5
- 486               		.cfi_offset 18, -4
- 487 000c 8F93      		push r24
- 488               	.LCFI7:
- 489               		.cfi_def_cfa_offset 6
- 490               		.cfi_offset 24, -5
- 491 000e 9F93      		push r25
- 492               	.LCFI8:
- 493               		.cfi_def_cfa_offset 7
- 494               		.cfi_offset 25, -6
- 495 0010 EF93      		push r30
- 496               	.LCFI9:
- 497               		.cfi_def_cfa_offset 8
- 498               		.cfi_offset 30, -7
- 499 0012 FF93      		push r31
- 500               	.LCFI10:
- 501               		.cfi_def_cfa_offset 9
- 502               		.cfi_offset 31, -8
- 503               	/* prologue: Signal */
- 504               	/* frame size = 0 */
- 505               	/* stack size = 8 */
- 506               	.L__stack_usage = 8
- 222:Arduino-mouse.c **** 	uint8_t ReceivedByte = UDR1;
- 507               		.loc 3 222 0
- 508 0014 8091 CE00 		lds r24,206
- 509               	.LVL39:
- 223:Arduino-mouse.c **** 
- 224:Arduino-mouse.c **** 	if (USB_DeviceState == DEVICE_STATE_Configured)
- 510               		.loc 3 224 0
- 511 0018 9EB3      		in r25,0x1e
- 512 001a 9430      		cpi r25,lo8(4)
- 513 001c 01F4      		brne .L19
- 514               	.LVL40:
- 515               	.LBB107:
- 516               	.LBB108:
+ 476               		.loc 1 221 0
+ 477               		.cfi_startproc
+ 478               	.LVL31:
+ 479               	/* prologue: function */
+ 480               	/* frame size = 0 */
+ 481               	/* stack size = 0 */
+ 482               	.L__stack_usage = 0
+ 483 0000 0895      		ret
+ 484               		.cfi_endproc
+ 485               	.LFE98:
+ 487               		.section	.text.__vector_23,"ax",@progbits
+ 488               	.global	__vector_23
+ 490               	__vector_23:
+ 491               	.LFB99:
+ 222:Arduino-mouse.c ****     /* Not used but must be present */
+ 223:Arduino-mouse.c **** }
+ 224:Arduino-mouse.c **** 
+ 225:Arduino-mouse.c **** /** ISR to manage the reception of data from the serial port, placing received bytes into a circula
+ 226:Arduino-mouse.c ****  *  for later transmission to the host.
+ 227:Arduino-mouse.c ****  */
+ 228:Arduino-mouse.c **** ISR(USART1_RX_vect, ISR_BLOCK)
+ 229:Arduino-mouse.c **** {
+ 492               		.loc 1 229 0
+ 493               		.cfi_startproc
+ 494               		.loc 1 229 0
+ 495 0000 1F92      		push r1
+ 496               	.LCFI8:
+ 497               		.cfi_def_cfa_offset 3
+ 498               		.cfi_offset 1, -2
+ 499 0002 0F92      		push r0
+ 500               	.LCFI9:
+ 501               		.cfi_def_cfa_offset 4
+ 502               		.cfi_offset 0, -3
+ 503 0004 0FB6      		in r0,__SREG__
+ 504 0006 0F92      		push r0
+ 505 0008 1124      		clr __zero_reg__
+ 506 000a 2F93      		push r18
+ 507               	.LCFI10:
+ 508               		.cfi_def_cfa_offset 5
+ 509               		.cfi_offset 18, -4
+ 510 000c 8F93      		push r24
+ 511               	.LCFI11:
+ 512               		.cfi_def_cfa_offset 6
+ 513               		.cfi_offset 24, -5
+ 514 000e 9F93      		push r25
+ 515               	.LCFI12:
+ 516               		.cfi_def_cfa_offset 7
+ 517               		.cfi_offset 25, -6
+ 518 0010 EF93      		push r30
+ 519               	.LCFI13:
+ 520               		.cfi_def_cfa_offset 8
+ 521               		.cfi_offset 30, -7
+ 522 0012 FF93      		push r31
+ 523               	.LCFI14:
+ 524               		.cfi_def_cfa_offset 9
+ 525               		.cfi_offset 31, -8
+ 526               	/* prologue: Signal */
+ 527               	/* frame size = 0 */
+ 528               	/* stack size = 8 */
+ 529               	.L__stack_usage = 8
+ 230:Arduino-mouse.c **** 	uint8_t ReceivedByte = UDR1;
+ 530               		.loc 1 230 0
+ 531 0014 8091 CE00 		lds r24,206
+ 532               	.LVL32:
+ 231:Arduino-mouse.c **** 
+ 232:Arduino-mouse.c **** 	if (USB_DeviceState == DEVICE_STATE_Configured)
+ 533               		.loc 1 232 0
+ 534 0018 9EB3      		in r25,0x1e
+ 535 001a 9430      		cpi r25,lo8(4)
+ 536 001c 01F4      		brne .L24
+ 537               	.LVL33:
+ 538               	.LBB118:
+ 539               	.LBB119:
  161:Lib/LightweightRingBuff.h **** 			
- 517               		.loc 1 161 0
- 518 001e E091 0000 		lds r30,USARTtoUSB_Buffer+128
- 519 0022 F091 0000 		lds r31,USARTtoUSB_Buffer+128+1
- 520 0026 8083      		st Z,r24
+ 540               		.loc 4 161 0
+ 541 001e E091 0000 		lds r30,USARTtoUSB_Buffer+128
+ 542 0022 F091 0000 		lds r31,USARTtoUSB_Buffer+128+1
+ 543 0026 8083      		st Z,r24
  163:Lib/LightweightRingBuff.h **** 			  Buffer->In = Buffer->Buffer;
- 521               		.loc 1 163 0
- 522 0028 E091 0000 		lds r30,USARTtoUSB_Buffer+128
- 523 002c F091 0000 		lds r31,USARTtoUSB_Buffer+128+1
- 524 0030 CF01      		movw r24,r30
- 525               	.LVL41:
- 526 0032 0196      		adiw r24,1
- 527 0034 9093 0000 		sts USARTtoUSB_Buffer+128+1,r25
- 528 0038 8093 0000 		sts USARTtoUSB_Buffer+128,r24
- 529 003c 8050      		subi r24,lo8(USARTtoUSB_Buffer+128)
- 530 003e 9040      		sbci r25,hi8(USARTtoUSB_Buffer+128)
- 531 0040 01F4      		brne .L21
+ 544               		.loc 4 163 0
+ 545 0028 E091 0000 		lds r30,USARTtoUSB_Buffer+128
+ 546 002c F091 0000 		lds r31,USARTtoUSB_Buffer+128+1
+ 547 0030 CF01      		movw r24,r30
+ 548               	.LVL34:
+ 549 0032 0196      		adiw r24,1
+ 550 0034 9093 0000 		sts USARTtoUSB_Buffer+128+1,r25
+ 551 0038 8093 0000 		sts USARTtoUSB_Buffer+128,r24
+ 552 003c 8050      		subi r24,lo8(USARTtoUSB_Buffer+128)
+ 553 003e 9040      		sbci r25,hi8(USARTtoUSB_Buffer+128)
+ 554 0040 01F4      		brne .L26
  164:Lib/LightweightRingBuff.h **** 
- 532               		.loc 1 164 0
- 533 0042 80E0      		ldi r24,lo8(USARTtoUSB_Buffer)
- 534 0044 90E0      		ldi r25,hi8(USARTtoUSB_Buffer)
- 535 0046 9283      		std Z+2,r25
- 536 0048 8183      		std Z+1,r24
- 537               	.L21:
- 538               	.LBB109:
+ 555               		.loc 4 164 0
+ 556 0042 80E0      		ldi r24,lo8(USARTtoUSB_Buffer)
+ 557 0044 90E0      		ldi r25,hi8(USARTtoUSB_Buffer)
+ 558 0046 9283      		std Z+2,r25
+ 559 0048 8183      		std Z+1,r24
+ 560               	.L26:
+ 561               	.LBB120:
  166:Lib/LightweightRingBuff.h **** 			{
- 539               		.loc 1 166 0
- 540 004a 9FB7      		in r25,__SREG__
- 541               	.LVL42:
- 542               	.LBB110:
- 543               	.LBB111:
+ 562               		.loc 4 166 0
+ 563 004a 9FB7      		in r25,__SREG__
+ 564               	.LVL35:
+ 565               	.LBB121:
+ 566               	.LBB122:
   50:/usr/lib/avr/include/util/atomic.h ****     return 1;
- 544               		.loc 2 50 0
- 545               	/* #APP */
- 546               	 ;  50 "/usr/lib/avr/include/util/atomic.h" 1
- 547 004c F894      		cli
- 548               	 ;  0 "" 2
- 549               	.LVL43:
- 550               	/* #NOAPP */
- 551               	.LBE111:
- 552               	.LBE110:
+ 567               		.loc 5 50 0
+ 568               	/* #APP */
+ 569               	 ;  50 "/usr/lib/avr/include/util/atomic.h" 1
+ 570 004c F894      		cli
+ 571               	 ;  0 "" 2
+ 572               	.LVL36:
+ 573               	/* #NOAPP */
+ 574               	.LBE122:
+ 575               	.LBE121:
  168:Lib/LightweightRingBuff.h **** 			}
- 553               		.loc 1 168 0
- 554 004e 8091 0000 		lds r24,USARTtoUSB_Buffer+132
- 555 0052 8F5F      		subi r24,lo8(-(1))
- 556 0054 8093 0000 		sts USARTtoUSB_Buffer+132,r24
- 557               	.LVL44:
- 558               	.LBB112:
- 559               	.LBB113:
+ 576               		.loc 4 168 0
+ 577 004e 8091 0000 		lds r24,USARTtoUSB_Buffer+132
+ 578 0052 8F5F      		subi r24,lo8(-(1))
+ 579 0054 8093 0000 		sts USARTtoUSB_Buffer+132,r24
+ 580               	.LVL37:
+ 581               	.LBB123:
+ 582               	.LBB124:
   70:/usr/lib/avr/include/util/atomic.h ****     __asm__ volatile ("" ::: "memory");
- 560               		.loc 2 70 0
- 561 0058 9FBF      		out __SREG__,r25
- 562               		.loc 2 71 0
- 563               	.LVL45:
- 564               	.L19:
- 565               	/* epilogue start */
- 566               	.LBE113:
- 567               	.LBE112:
- 568               	.LBE109:
- 569               	.LBE108:
- 570               	.LBE107:
- 225:Arduino-mouse.c **** 	  RingBuffer_Insert(&USARTtoUSB_Buffer, ReceivedByte);
- 226:Arduino-mouse.c **** }
- 571               		.loc 3 226 0
- 572 005a FF91      		pop r31
- 573 005c EF91      		pop r30
- 574 005e 9F91      		pop r25
- 575 0060 8F91      		pop r24
- 576 0062 2F91      		pop r18
- 577 0064 0F90      		pop r0
- 578 0066 0FBE      		out __SREG__,r0
- 579 0068 0F90      		pop r0
- 580 006a 1F90      		pop r1
- 581 006c 1895      		reti
- 582               		.cfi_endproc
- 583               	.LFE99:
- 585               		.comm	mouseReport,3,1
- 586               		.comm	USARTtoUSB_Buffer,133,1
- 587               	.global	Mouse_HID_Interface
- 588               		.data
- 591               	Mouse_HID_Interface:
- 592 0000 00        		.byte	0
- 593 0001 01        		.byte	1
- 594 0002 0800      		.word	8
- 595 0004 00        		.byte	0
- 596 0005 0000      		.word	PrevMouseHIDReportBuffer
- 597 0007 03        		.byte	3
- 598 0008 0000 0000 		.zero	5
- 598      00
- 599               		.comm	PrevMouseHIDReportBuffer,3,1
- 600               		.text
- 601               	.Letext0:
- 602               		.file 8 "/usr/lib/avr/include/stdint.h"
- 603               		.file 9 "../../LUFA/Drivers/USB/Class/Device/../Common/HID.h"
- 604               		.file 10 "../../LUFA/Drivers/USB/HighLevel/../LowLevel/USBController.h"
- 605               		.file 11 "../../LUFA/Drivers/USB/HighLevel/USBTask.h"
+ 583               		.loc 5 70 0
+ 584 0058 9FBF      		out __SREG__,r25
+ 585               		.loc 5 71 0
+ 586               	.LVL38:
+ 587               	.L24:
+ 588               	/* epilogue start */
+ 589               	.LBE124:
+ 590               	.LBE123:
+ 591               	.LBE120:
+ 592               	.LBE119:
+ 593               	.LBE118:
+ 233:Arduino-mouse.c **** 	  RingBuffer_Insert(&USARTtoUSB_Buffer, ReceivedByte);
+ 234:Arduino-mouse.c **** }
+ 594               		.loc 1 234 0
+ 595 005a FF91      		pop r31
+ 596 005c EF91      		pop r30
+ 597 005e 9F91      		pop r25
+ 598 0060 8F91      		pop r24
+ 599 0062 2F91      		pop r18
+ 600 0064 0F90      		pop r0
+ 601 0066 0FBE      		out __SREG__,r0
+ 602 0068 0F90      		pop r0
+ 603 006a 1F90      		pop r1
+ 604 006c 1895      		reti
+ 605               		.cfi_endproc
+ 606               	.LFE99:
+ 608               	.global	isNewReport
+ 609               		.section .bss
+ 612               	isNewReport:
+ 613 0000 00        		.zero	1
+ 614               		.comm	mouseReport,4,1
+ 615               		.comm	USARTtoUSB_Buffer,133,1
+ 616               	.global	Mouse_HID_Interface
+ 617               		.data
+ 620               	Mouse_HID_Interface:
+ 621 0000 00        		.byte	0
+ 622 0001 01        		.byte	1
+ 623 0002 0800      		.word	8
+ 624 0004 00        		.byte	0
+ 625 0005 0000      		.word	PrevMouseHIDReportBuffer
+ 626 0007 04        		.byte	4
+ 627 0008 0000 0000 		.zero	5
+ 627      00
+ 628               		.comm	PrevMouseHIDReportBuffer,4,1
+ 629               		.text
+ 630               	.Letext0:
+ 631               		.file 8 "/usr/lib/avr/include/stdint.h"
+ 632               		.file 9 "../../LUFA/Drivers/USB/Class/Device/../Common/HID.h"
+ 633               		.file 10 "../../LUFA/Drivers/USB/HighLevel/../LowLevel/USBController.h"
+ 634               		.file 11 "../../LUFA/Drivers/USB/HighLevel/USBTask.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 Arduino-mouse.c
-     /tmp/ccJihHoC.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccJihHoC.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccJihHoC.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccJihHoC.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccJihHoC.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccJihHoC.s:12     .text.RingBuffer_Remove.constprop.3:0000000000000000 RingBuffer_Remove.constprop.3
+     /tmp/ccCxcx1Q.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccCxcx1Q.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccCxcx1Q.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccCxcx1Q.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccCxcx1Q.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccCxcx1Q.s:13     .text.SetupHardware:0000000000000000 SetupHardware
+     /tmp/ccCxcx1Q.s:99     .text.startup.main:0000000000000000 main
                             *COM*:0000000000000085 USARTtoUSB_Buffer
-     /tmp/ccJihHoC.s:77     .text.SetupHardware:0000000000000000 SetupHardware
-     /tmp/ccJihHoC.s:163    .text.startup.main:0000000000000000 main
-                            *COM*:0000000000000003 mouseReport
-     /tmp/ccJihHoC.s:591    .data:0000000000000000 Mouse_HID_Interface
-     /tmp/ccJihHoC.s:294    .text.EVENT_USB_Device_Connect:0000000000000000 EVENT_USB_Device_Connect
-     /tmp/ccJihHoC.s:308    .text.EVENT_USB_Device_Disconnect:0000000000000000 EVENT_USB_Device_Disconnect
-     /tmp/ccJihHoC.s:323    .text.EVENT_USB_Device_ConfigurationChanged:0000000000000000 EVENT_USB_Device_ConfigurationChanged
-     /tmp/ccJihHoC.s:354    .text.EVENT_USB_Device_UnhandledControlRequest:0000000000000000 EVENT_USB_Device_UnhandledControlRequest
-     /tmp/ccJihHoC.s:373    .text.EVENT_USB_Device_StartOfFrame:0000000000000000 EVENT_USB_Device_StartOfFrame
-     /tmp/ccJihHoC.s:405    .text.CALLBACK_HID_Device_CreateHIDReport:0000000000000000 CALLBACK_HID_Device_CreateHIDReport
-     /tmp/ccJihHoC.s:451    .text.CALLBACK_HID_Device_ProcessHIDReport:0000000000000000 CALLBACK_HID_Device_ProcessHIDReport
-     /tmp/ccJihHoC.s:467    .text.__vector_23:0000000000000000 __vector_23
-                            *COM*:0000000000000003 PrevMouseHIDReportBuffer
+     /tmp/ccCxcx1Q.s:612    .bss:0000000000000000 isNewReport
+                            *COM*:0000000000000004 mouseReport
+     /tmp/ccCxcx1Q.s:620    .data:0000000000000000 Mouse_HID_Interface
+     /tmp/ccCxcx1Q.s:310    .text.EVENT_USB_Device_Connect:0000000000000000 EVENT_USB_Device_Connect
+     /tmp/ccCxcx1Q.s:324    .text.EVENT_USB_Device_Disconnect:0000000000000000 EVENT_USB_Device_Disconnect
+     /tmp/ccCxcx1Q.s:339    .text.EVENT_USB_Device_ConfigurationChanged:0000000000000000 EVENT_USB_Device_ConfigurationChanged
+     /tmp/ccCxcx1Q.s:370    .text.EVENT_USB_Device_UnhandledControlRequest:0000000000000000 EVENT_USB_Device_UnhandledControlRequest
+     /tmp/ccCxcx1Q.s:389    .text.EVENT_USB_Device_StartOfFrame:0000000000000000 EVENT_USB_Device_StartOfFrame
+     /tmp/ccCxcx1Q.s:421    .text.CALLBACK_HID_Device_CreateHIDReport:0000000000000000 CALLBACK_HID_Device_CreateHIDReport
+     /tmp/ccCxcx1Q.s:474    .text.CALLBACK_HID_Device_ProcessHIDReport:0000000000000000 CALLBACK_HID_Device_ProcessHIDReport
+     /tmp/ccCxcx1Q.s:490    .text.__vector_23:0000000000000000 __vector_23
+                            *COM*:0000000000000004 PrevMouseHIDReportBuffer
 
 UNDEFINED SYMBOLS
 USB_Init

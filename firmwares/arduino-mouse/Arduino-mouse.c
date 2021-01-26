@@ -89,6 +89,7 @@ USB_ClassInfo_HID_Device_t Mouse_HID_Interface = {
 RingBuff_t USARTtoUSB_Buffer;
 
 USB_MouseReport_Data_t mouseReport;
+bool isNewReport = false;
 
 /** Main program entry point. This routine contains the overall program flow, including initial
  *  setup of all components and the main program loop.
@@ -108,15 +109,16 @@ int main(void)
 	    RingBuff_Count_t BufferCount = RingBuffer_GetCount(&USARTtoUSB_Buffer);
 
 	    if (BufferCount >= 4) {
-		for (ind=0; ind<3; ind++) {
-		    ((uint8_t *)&newReport)[ind] = RingBuffer_Remove(&USARTtoUSB_Buffer);
-		}
+			for (ind=0; ind<4; ind++) {
+				((uint8_t *)&newReport)[ind] = RingBuffer_Remove(&USARTtoUSB_Buffer);
+			}
 
-		RingBuffer_Remove(&USARTtoUSB_Buffer);	// unused wheel for now
+			isNewReport = true;
 
-		mouseReport.Button = newReport.Button;
-		mouseReport.X = newReport.X;
-		mouseReport.Y = newReport.Y;
+			mouseReport.Button = newReport.Button;
+			mouseReport.X = newReport.X;
+			mouseReport.Y = newReport.Y;
+			mouseReport.Wheel = newReport.Wheel;
 	    }
 
 	    HID_Device_USBTask(&Mouse_HID_Interface);
@@ -194,7 +196,13 @@ bool CALLBACK_HID_Device_CreateHIDReport(
 	*reportp = mouseReport;
 
 	*ReportSize = sizeof(USB_MouseReport_Data_t);
-	return false;
+	
+	if (isNewReport) {
+		isNewReport = false;
+		return true;
+	}
+
+	return false;		
 }
 
 /** HID class driver callback function for the processing of HID reports from the host.
